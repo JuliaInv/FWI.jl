@@ -13,6 +13,7 @@ notifications:
  
 before_install:
    - julia -e 'Pkg.add("MAT");'
+   - julia -e 'Pkg.clone("https://github.com/lruthotto/KrylovMethods.jl","KrylovMethods"); Pkg.build("KrylovMethods");'
    - julia -e 'Pkg.clone("https://github.com/JuliaInv/jInv.jl","jInv"); Pkg.build("jInv");'
    - julia -e 'Pkg.clone("https://github.com/JuliaInv/FactoredEikonalFastMarching.jl","FactoredEikonalFastMarching"); Pkg.build("FactoredEikonalFastMarching");'
    - julia -e 'Pkg.clone("https://github.com/JuliaInv/EikonalInv.jl","EikonalInv"); Pkg.build("EikonalInv");'
