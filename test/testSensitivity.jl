@@ -78,7 +78,7 @@ P = generateSrcRcvProjOperators(Minv.n+1,rcvNodeMap);
 
 ABLPad = pad+5;
 gamma = getABL(Minv,true,ones(Int64,Minv.dim)*ABLPad,1.0);
-attenuation = 0.01;
+attenuation = 0.001;
 gamma += attenuation; # adding Attenuation.
 
 # Ainv = getMUMPSsolver([],0,0,0);
@@ -137,7 +137,7 @@ JtZ = getSensTMatVec(Z,m[:],pf);
 println(dot(Jv[:],Z[:]))
 println(dot(JtZ[:],v))
 
-if real(dot(JtZ[:],v) - dot(Jv[:],Z[:])) > 1e-8
+if real(dot(JtZ[:],v) - dot(Jv[:],Z[:])) > 1e-5
 	warn("Checking that (J^T)^T = J for FWI falied: ",real(dot(JtZ[:],v) - dot(Jv[:],Z[:])) );
 end
 
@@ -172,7 +172,7 @@ end
 # end
 
 
-
-
+rm("srcMap.dat");
+rm("rcvMap.dat");
 
 

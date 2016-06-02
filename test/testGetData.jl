@@ -51,7 +51,7 @@ for k=1:length(dobsRF)
 	Dobs[:,SourcesSubInd[k]] = dobsk;
 end
 
-@test vecnorm(Dobs-dobs)/vecnorm(dobs) < 1e-12
+@test vecnorm(Dobs-dobs)/vecnorm(dobs) < 1e-8
 
 
 

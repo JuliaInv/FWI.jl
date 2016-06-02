@@ -33,13 +33,13 @@ dataDir = pwd();
 resultsDir = pwd();
 ########################################################################################################
 dim     = 2;
-pad     = 24;
-jumpSrc = 5;
+pad     = 10;
+jumpSrc = 9;
 newSize = [100,50];
 offset  = ceil(Int64,(newSize[1]*(13.5/13.5)));
 println("Offset is: ",offset)
 (m,Minv,mref,boundsHigh,boundsLow) = readModelAndGenerateMeshMref(modelDir,"SEGmodel2Dsalt.dat",dim,pad,[0.0,13.5,0.0,4.2],newSize,1.752,2.7);
-maxBatchSize = 32;
+maxBatchSize = 5;
 omega = [0.5,1.0]*2*pi;
 
 # ###################################################################################################################
@@ -77,7 +77,8 @@ end
 
 ######################## DIRECT SOLVER #################################################
 
-Ainv = getMUMPSsolver([],0,0,2);
+# Ainv = getMUMPSsolver([],0,0,2);
+Ainv = getJuliaSolver();
 # Ainv = getPARsolver([],0,0,6);
 
 ##########################################################################################
@@ -146,10 +147,11 @@ mc = copy(mref[:]);
 mc,Dc = freqCont(mc, pInv, pMis,contDiv, 3, resultsFilename,dump,"Joint",1,1,"projGN");
 
 ##############################################################################################
-# rm("DATA_SEG(66,33)_travelTime.dat");
-# rm("DATA_SEG(66,33)_rcvMap.dat");
-# rm("DATA_SEG(66,33)_srcMap.dat");
-# rm("DATA_SEG(66,33)_PARAM.mat");
-# rm("jInv.out");
+rm("DATA_SEG(120,60)_freq0.5.dat");
+rm("DATA_SEG(120,60)_freq1.0.dat");
+rm("DATA_SEG(120,60)_rcvMap.dat");
+rm("DATA_SEG(120,60)_srcMap.dat");
+rm("DATA_SEG(120,60)_PARAM.mat");
+rm("jInv.out");
 
 
