@@ -121,58 +121,58 @@ function getFWIparamInternal(omega::Float64,WaveletCoef::Complex128,
 	return FWIparam(omega,WaveletCoef,gamma,Sources,Receivers,Fields,Mesh,ForwardSolver,forwardSolveBatchSize,Array(Int64,0))
 end
 
-function setSourceSelection(pForRF::RemoteRef{Channel{Any}}, selection::Array{Int64,1})
-	s = copy(selection);
-	if minimum(s) < 1
-		error("FWI: sources selection out of range");
-	end
-	pFor  = take!(pForRF);
-	s = [];
-	if isa(pFor,FWIparam)
-		Sources = pFor.Sources
-		if maximum(s)>size(Sources,2)
-			s = s[s.<=size(Sources,2)];
-			warn("FWI: reducing selection: s = s[s.<=size(Sources,2)]");
-		end	
-		pFor.sourceSelection = s;
-	end
-	put!(pForRF,pFor);
-	return s;
-end
+# function setSourceSelection(pForRF::RemoteRef{Channel{Any}}, selection::Array{Int64,1})
+	# s = copy(selection);
+	# if minimum(s) < 1
+		# error("FWI: sources selection out of range");
+	# end
+	# pFor  = take!(pForRF);
+	# s = [];
+	# if isa(pFor,FWIparam)
+		# Sources = pFor.Sources
+		# if maximum(s)>size(Sources,2)
+			# s = s[s.<=size(Sources,2)];
+			# warn("FWI: reducing selection: s = s[s.<=size(Sources,2)]");
+		# end	
+		# pFor.sourceSelection = s;
+	# end
+	# put!(pForRF,pFor);
+	# return s;
+# end
 
 
-function setSourceSelectionRatio(pForRF::RemoteRef{Channel{Any}}, selectionRatio::Float64)
-	if selectionRatio <= 0.0 || selectionRatio > 1.0
-		error("selectionRatio has to be between 0 and 1");
-	end
-	if selectionRatio == 1.0 
-		return;
-	end
-	pFor  = take!(pForRF);
-	s = [];
-	if isa(pFor,FWIparam)
-		Q = pFor.Sources
-		s = randperm(size(Q,2))[1:ceil(Int64,size(Q,2)*selectionRatio)];
-		pFor.sourceSelection = s;
-	end
-	put!(pForRF,pFor);
-	return s;
-end
+# function setSourceSelectionRatio(pForRF::RemoteRef{Channel{Any}}, selectionRatio::Float64)
+	# if selectionRatio <= 0.0 || selectionRatio > 1.0
+		# error("selectionRatio has to be between 0 and 1");
+	# end
+	# if selectionRatio == 1.0 
+		# return;
+	# end
+	# pFor  = take!(pForRF);
+	# s = [];
+	# if isa(pFor,FWIparam)
+		# Q = pFor.Sources
+		# s = randperm(size(Q,2))[1:ceil(Int64,size(Q,2)*selectionRatio)];
+		# pFor.sourceSelection = s;
+	# end
+	# put!(pForRF,pFor);
+	# return s;
+# end
 
-function setSourceSelectionNum(pForRF::RemoteRef{Channel{Any}}, selectionNum::Int64)
-	if selectionNum <= 0 
-		error("selectionNum has to be bigger than 1");
-	end
-	pFor  = take!(pForRF);
-	s = [];
-	if isa(pFor,FWIparam)
-		Q = pFor.Sources
-		s = randperm(size(Q,2))[1:selectionNum];
-		pFor.sourceSelection = s;
-	end
-	put!(pForRF,pFor);
-	return s;
-end
+# function setSourceSelectionNum(pForRF::RemoteRef{Channel{Any}}, selectionNum::Int64)
+	# if selectionNum <= 0 
+		# error("selectionNum has to be bigger than 1");
+	# end
+	# pFor  = take!(pForRF);
+	# s = [];
+	# if isa(pFor,FWIparam)
+		# Q = pFor.Sources
+		# s = randperm(size(Q,2))[1:selectionNum];
+		# pFor.sourceSelection = s;
+	# end
+	# put!(pForRF,pFor);
+	# return s;
+# end
 
 
 import jInv.Utils.clear!

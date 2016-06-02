@@ -57,12 +57,12 @@ function getSensMatVec(v::Vector,m::Vector,pFor::FWIparam)
 		Jv[:,batchIdxs] = omega^2*(P'*U);
 	end
 	
-	if isa(Ainv,ShiftedLaplacianMultigridSolver)
-		clear!(Ainv.MG);
-	end
+	# if isa(Ainv,ShiftedLaplacianMultigridSolver) 
+		# Experimental: J does not necessarily needs to clear the setup.
+		# clear!(Ainv.MG);
+	# end
 	
-	# U = H\U;
-	
+
     return vec(Jv)
 end
 

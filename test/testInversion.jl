@@ -12,6 +12,7 @@ using  FWI
 using  ForwardHelmholtz
 using  Multigrid
 
+println("\n===============  TestInversion using Julia solver   ===================\n");
 #############################################################################################################
 modelDir = "../examples";
 
@@ -58,10 +59,7 @@ end
 
 ######################## ITERATIVE SOLVER #############################################
 # levels      = 2;
-# numCores 	= 8;
-# if server
-	# numCores = 24;
-# end
+# numCores 	= 4;
 # blas_set_num_threads(numCores);
 # maxIter     = 50;
 # relativeTol = 1e-4;
@@ -70,9 +68,9 @@ end
 # relaxPre 	= 2;
 # relaxPost   = 2;
 # cycleType   ='W';
-# coarseSolveType = "MUMPS";
+# coarseSolveType = "NoMUMPS";
 # MG = getMGparam(levels,numCores,maxIter,relativeTol,relaxType,relaxParam,relaxPre,relaxPost,cycleType,coarseSolveType,0.0,0.0,Minv);
-# shift = 0.2;
+# shift = 0.1;
 # Ainv = getShiftedLaplacianMultigridSolver(Minv, MG,shift);
 
 ######################## DIRECT SOLVER #################################################

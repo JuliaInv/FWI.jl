@@ -82,23 +82,25 @@ attenuation = 0.001;
 gamma += attenuation; # adding Attenuation.
 
 # Ainv = getMUMPSsolver([],0,0,0);
-Ainv = getJuliaSolver();
+# Ainv = getJuliaSolver();
 
 ###################################################################################################
-# levels      = 1;
-# numCores 	= 8; 
-# maxIter     = 50;
-# innerIter   = 4;
-# relativeTol = 1e-4;
-# relaxType   = "SPAI";
-# relaxParam  = 1.0;
-# relaxPre 	= 2;
-# relaxPost   = 2;
-# cycleType   ='W';
-# coarseSolveType = "MUMPS";
-# MG = getMGparam(levels,numCores,maxIter,innerIter,relativeTol,relaxType,relaxParam,relaxPre,relaxPost,cycleType,coarseSolveType);
-# shift = 0.01;
-# Ainv = getShiftedLaplacianMultigridSolver(Minv, MG,shift);
+levels      = 2;
+numCores 	= 4;
+blas_set_num_threads(numCores);
+maxIter     = 50;
+relativeTol = 1e-4;
+relaxType   = "SPAI";
+relaxParam  = 1.0;
+relaxPre 	= 2;
+relaxPost   = 2;
+cycleType   ='W';
+coarseSolveType = "NoMUMPS";
+MG = getMGparam(levels,numCores,maxIter,relativeTol,relaxType,relaxParam,relaxPre,relaxPost,cycleType,coarseSolveType,0.0,0.0,Minv);
+shift = 0.1;
+Ainv = getShiftedLaplacianMultigridSolver(Minv, MG,shift);
+
+
 ###################################################################################################
 
 

@@ -12,17 +12,6 @@ function getSensTMatVec(v::Vector,m::Vector,pFor::FWIparam)
 	
 	batchSize 		= pFor.forwardSolveBatchSize;
 	select  		= pFor.sourceSelection;
-    
-	
-	# if useFilesForFields
-		# tfilename = getFieldsFileName(omega);
-		# file = matopen(tfilename);
-		# U = read(file,"Fields");
-		# U = convert(Array{FieldsType},U);
-		# close(file);
-	# else
-		# U = pFor.Fields;
-	# end
 	
 	nsrc = size(Q,2); nrec = size(P,2);
 	
@@ -78,6 +67,7 @@ function getSensTMatVec(v::Vector,m::Vector,pFor::FWIparam)
 	end
 	
 	if isa(Ainv,ShiftedLaplacianMultigridSolver)
+		# println("Clearing!!!");
 		clear!(Ainv.MG);
 	end
 	
