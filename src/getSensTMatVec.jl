@@ -46,7 +46,7 @@ function getSensTMatVec(v::Vector,m::Vector,pFor::FWIparam)
 		batchIdxs = (k_batch-1)*batchSize + 1 : min(k_batch*batchSize,nsrc);
 		V = P*Vdatashape[:,batchIdxs];
 		V,Ainv = solveLinearSystem(H,V,Ainv,1);
-		if useFilesForFields
+		if pFor.useFilesForFields
 			filename = getFieldsFileName(omega);
 			file     = matopen(filename);
 			U        = read(file,string("Ubatch_",k_batch));

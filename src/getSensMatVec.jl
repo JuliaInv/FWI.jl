@@ -44,7 +44,7 @@ function getSensMatVec(v::Vector,m::Vector,pFor::FWIparam)
 	t = ((1+1im*vec(gamma)).*v);
 	for k_batch = 1:numBatches
 		batchIdxs = (k_batch-1)*batchSize + 1 : min(k_batch*batchSize,nsrc);
-		if useFilesForFields
+		if pFor.useFilesForFields
 			filename = getFieldsFileName(omega);
 			file     = matopen(filename);
 			U        = read(file,string("Ubatch_",k_batch));

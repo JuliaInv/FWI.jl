@@ -47,7 +47,7 @@ function getData(m,pFor::FWIparam,doClear::Bool=false)
 	Fields = [];
 	
 	if doClear==false
-		if useFilesForFields 
+		if pFor.useFilesForFields 
 			tfilename = getFieldsFileName(omega);
 			tfile     = matopen(tfilename, "w");
 		else
@@ -73,7 +73,7 @@ function getData(m,pFor::FWIparam,doClear::Bool=false)
 		D[:,batchIdxs]      = (P'*U);
 		
 		if doClear==false
-			if useFilesForFields 
+			if pFor.useFilesForFields 
 				write(tfile,string("Ubatch_",k_batch),convert(Array{Complex64},U));
 			else
 				Fields[:,batchIdxs] = U;
@@ -88,7 +88,7 @@ function getData(m,pFor::FWIparam,doClear::Bool=false)
 	pFor.ForwardSolver = Ainv;
 	
 	if doClear==false
-		if useFilesForFields 
+		if pFor.useFilesForFields 
 			close(tfile);
 		else
 			pFor.Fields = Fields;
