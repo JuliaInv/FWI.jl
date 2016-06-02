@@ -1,7 +1,7 @@
 function prepareFWIDataFiles(m,Minv::RegularMesh,mref,boundsHigh,boundsLow,
 							filenamePrefix::ASCIIString,omega::Array{Float64,1},waveCoef::Array{Complex128,1},
 							pad::Int64,ABLpad::Int64,jump::Int64,offset::Int64=prod(Minv.n+1),workerList = workers(), 
-							maxBatchSize::Int64=48, Ainv::AbstractSolver = getMUMPSsolver([],0,0,2))
+							maxBatchSize::Int64=48, Ainv::AbstractSolver = getMUMPSsolver([],0,0,2),useFilesForFields::Bool = false)
 
 ########################## m is in Velocity here. ###################################
 RCVfile = string(filenamePrefix,"_rcvMap.dat");
@@ -30,7 +30,7 @@ end
 function prepareJointTravelTimeAndFWIDataFiles(m,Minv::RegularMesh,mref,boundsHigh,boundsLow,
 							filenamePrefix::ASCIIString,omega::Array{Float64,1},waveCoef::Array{Complex128,1},
 							pad::Int64,ABLpad::Int64,jump::Int64,offset::Int64=prod(Minv.n+1),workerList = workers(), 
-							maxBatchSize::Int64=48, Ainv::AbstractSolver = getMUMPSsolver([],0,0,2))
+							maxBatchSize::Int64=48, Ainv::AbstractSolver = getMUMPSsolver([],0,0,2),useFilesForFields::Bool = false)
 
 ########################## m is in Velocity here. ###################################
 RCVfile = string(filenamePrefix,"_rcvMap.dat");
@@ -39,10 +39,10 @@ writeSrcRcvLocFile(SRCfile,Minv,pad,jump);
 writeSrcRcvLocFile(RCVfile,Minv,pad,1);
 	
 dataFullFilenamePrefix = string(filenamePrefix,"_freq");
-gamma = prepareFWIDataFiles2(m, Minv, filenamePrefix,dataFullFilenamePrefix,omega,waveCoef,pad,ABLpad,offset,workerList,maxBatchSize,Ainv);	
+gamma = prepareFWIDataFiles2(m, Minv, filenamePrefix,dataFullFilenamePrefix,omega,waveCoef,pad,ABLpad,offset,workerList,maxBatchSize,Ainv,useFilesForFields);	
 dataFullFilenamePrefix = string(filenamePrefix,"_travelTime");
 HO = false;
-prepareTravelTimeDataFiles(m, Minv, filenamePrefix,dataFullFilenamePrefix,offset,HO);
+prepareTravelTimeDataFiles(m, Minv, filenamePrefix,dataFullFilenamePrefix,offset,HO,useFilesForFields);
 
 file = matopen(string(filenamePrefix,"_PARAM.mat"), "w");
 write(file,"boundsLow",boundsLow);
@@ -61,7 +61,7 @@ end
 
 function prepareFWIDataFiles2(m, Minv::RegularMesh, filenamePrefix::ASCIIString,dataFullFilenamePrefix::ASCIIString, omega::Array{Float64,1}, 
 								waveCoef::Array{Complex128,1}, pad::Int64,ABLpad::Int64,offset::Int64,workerList::Array{Int64,1},maxBatchSize::Int64,
-								Ainv::AbstractSolver)
+								Ainv::AbstractSolver,useFilesForFields::Bool = false)
 
 
 println("maxOmega*maxKappaSq*h: should be below 0.6");
@@ -88,7 +88,7 @@ println("~~~~~~~ Getting data FWI: ~~~~~~~");
 # Solve forward problem (should be relaced in reading data from file)
 
 batch = min(size(Q,2),maxBatchSize);
-(pFor,contDiv,SourcesSubInd) = getFWIparam(omega,waveCoef,vec(gamma),Q,P,Minv,Ainv,workerList,batch);
+(pFor,contDiv,SourcesSubInd) = getFWIparam(omega,waveCoef,vec(gamma),Q,P,Minv,Ainv,workerList,batch,useFilesForFields);
 
 (D,pFor) = getData(velocityToSlowSquared(m[:])[1],pFor,ones(length(pFor)),true);
 

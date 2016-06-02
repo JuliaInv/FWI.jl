@@ -1,6 +1,6 @@
 function setupFWI(m,filenamePrefix::ASCIIString,resultsOutputFolderAndPrefix::ASCIIString,plotting::Bool,
 		workersFWI::Array{Int64,1}=workers(),maxBatchSize::Int64 = 48,
-		Ainv::AbstractSolver = getMUMPSsolver([],0,0,2), misfun::Function=SSDFun)
+		Ainv::AbstractSolver = getMUMPSsolver([],0,0,2), misfun::Function=SSDFun,useFilesForFields::Bool = false)
 
 		
 file = matopen(string(filenamePrefix,"_PARAM.mat"));
@@ -66,7 +66,7 @@ misfun = SSDFun;
 println("Reading FWI data:");
 
 batch = min(size(Q,2),maxBatchSize);
-(pForFWI,contDivFWI,SourcesSubIndFWI) = getFWIparam(omega,waveCoef,vec(gamma),Q,P,Minv,Ainv,workersFWI,batch);
+(pForFWI,contDivFWI,SourcesSubIndFWI) = getFWIparam(omega,waveCoef,vec(gamma),Q,P,Minv,Ainv,workersFWI,batch,useFilesForFields);
 
 # write data to remote workers
 Wd   = Array(Array{Complex128,2},length(pForFWI))

@@ -1,6 +1,6 @@
 function setupJointInversion(m,filenamePrefix::ASCIIString,resultsOutputFolderAndPrefix::ASCIIString,plotting::Bool,
 		workersFWI::Array{Int64,1}=workers(),maxBatchSize::Int64 = 48,
-		Ainv::AbstractSolver = getMUMPSsolver([],0,0,2),ignoreEik::Bool=false, misfun::Function=SSDFun,beta::Float64=1.0)
+		Ainv::AbstractSolver = getMUMPSsolver([],0,0,2),ignoreEik::Bool=false, misfun::Function=SSDFun,beta::Float64=1.0,useFilesForFields::Bool = false)
 		
 file = matopen(string(filenamePrefix,"_PARAM.mat"));
 n_cells = read(file,"MinvN");
@@ -77,7 +77,7 @@ if ignoreEik==false
 
 	EikMPIWorkers = nworkers(); # this just set the maximal MPI workers. To activate parallelism, run addprocs()
 
-	(pForEik,contDivEik,SourcesSubIndEik) = getEikonalInvParam(Minv,Q,P,HO,EikMPIWorkers);
+	(pForEik,contDivEik,SourcesSubIndEik) = getEikonalInvParam(Minv,Q,P,HO,EikMPIWorkers,useFilesForFields);
 	Wd 		= Array(Array{Float64},length(pForEik));
 	dobs 	= Array(Array{Float64},length(pForEik));
 	for i=1:length(pForEik)
@@ -93,7 +93,7 @@ end
 println("Reading FWI data:");
 
 batch = min(size(Q,2),maxBatchSize);
-(pForFWI,contDivFWI,SourcesSubIndFWI) = getFWIparam(omega,waveCoef,vec(gamma),Q,P,Minv,Ainv,workersFWI,batch);
+(pForFWI,contDivFWI,SourcesSubIndFWI) = getFWIparam(omega,waveCoef,vec(gamma),Q,P,Minv,Ainv,workersFWI,batch,useFilesForFields);
 
 # write data to remote workers
 Wd   = Array(Array{Complex128,2},length(pForFWI))
