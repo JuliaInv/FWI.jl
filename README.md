@@ -15,6 +15,7 @@ This package uses: EikonalInv.jl (for seismic utils), Multigrid.jl, ForwardHelmh
 # Installation
 
 ```
+Pkg.clone("https://github.com/simonster/MAT.jl.git","MAT");
 Pkg.clone("https://github.com/JuliaInv/jInv.jl","jInv")
 Pkg.clone("https://github.com/JuliaInv/FactoredEikonalFastMarching.jl","FactoredEikonalFastMarching")
 Pkg.clone("https://github.com/JuliaInv/EikonalInv.jl","EikonalInv")
