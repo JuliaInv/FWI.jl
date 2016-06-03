@@ -6,8 +6,8 @@ function prepareFWIDataFiles(m,Minv::RegularMesh,mref,boundsHigh,boundsLow,
 ########################## m is in Velocity here. ###################################
 RCVfile = string(filenamePrefix,"_rcvMap.dat");
 SRCfile = string(filenamePrefix,"_srcMap.dat");
-writeSrcRcvLocFile(SRCfile,Minv,pad,jump);
-writeSrcRcvLocFile(RCVfile,Minv,pad,1);
+writeSrcRcvLocFile(SRCfile,Minv,ABLpad,jump);
+writeSrcRcvLocFile(RCVfile,Minv,ABLpad,1);
 	
 dataFullFilenamePrefix = string(filenamePrefix,"_freq");
 gamma = prepareFWIDataFiles2(m, Minv, filenamePrefix,dataFullFilenamePrefix,omega,waveCoef,pad,ABLpad,offset,workerList,maxBatchSize,Ainv);	
@@ -35,8 +35,8 @@ function prepareJointTravelTimeAndFWIDataFiles(m,Minv::RegularMesh,mref,boundsHi
 ########################## m is in Velocity here. ###################################
 RCVfile = string(filenamePrefix,"_rcvMap.dat");
 SRCfile = string(filenamePrefix,"_srcMap.dat");
-writeSrcRcvLocFile(SRCfile,Minv,pad,jump);
-writeSrcRcvLocFile(RCVfile,Minv,pad,1);
+writeSrcRcvLocFile(SRCfile,Minv,ABLpad,jump);
+writeSrcRcvLocFile(RCVfile,Minv,ABLpad,1);
 	
 dataFullFilenamePrefix = string(filenamePrefix,"_freq");
 gamma = prepareFWIDataFiles2(m, Minv, filenamePrefix,dataFullFilenamePrefix,omega,waveCoef,pad,ABLpad,offset,workerList,maxBatchSize,Ainv,useFilesForFields);	
