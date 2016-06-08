@@ -60,8 +60,8 @@ pad = 16;
 jump = 5;
 offset = 100;
 
-omega = [0.5./maximum(Minv.h), 0.2./maximum(Minv.h)];
-omega = [0.2./maximum(Minv.h)];
+# omega = [0.5./maximum(Minv.h), 0.2./maximum(Minv.h)];
+omega = [0.5./maximum(Minv.h)];
 
 WaveletCoef = rand(Complex128,size(omega));
 println(omega)
@@ -97,7 +97,7 @@ relaxPost   = 2;
 cycleType   ='W';
 coarseSolveType = "NoMUMPS";
 MG = getMGparam(levels,numCores,maxIter,relativeTol,relaxType,relaxParam,relaxPre,relaxPost,cycleType,coarseSolveType,0.0,0.0,Minv);
-shift = 0.1;
+shift = 0.15;
 Ainv = getShiftedLaplacianMultigridSolver(Minv, MG,shift);
 
 

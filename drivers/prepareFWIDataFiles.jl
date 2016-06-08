@@ -65,7 +65,7 @@ function prepareFWIDataFiles2(m, Minv::RegularMesh, filenamePrefix::ASCIIString,
 
 
 println("maxOmega*maxKappaSq*h: should be below 0.6");
-println(omega[end]*Minv.h*sqrt(1./maximum(m)));
+println(omega[end]*maximum(Minv.h)*(1./minimum(m)));
 
 
 RCVfile = string(filenamePrefix,"_rcvMap.dat");

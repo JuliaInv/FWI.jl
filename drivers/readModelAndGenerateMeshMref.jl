@@ -6,18 +6,18 @@ if dim==2
 	m = readdlm(string(readModelFolder,"/",modelFilename));
 	m = m*1e-3;
 	m = m';
-	mref = copy(m);
-	mref[:,1:end-17] = getSimilarLinearModel(m[:,1:end-17],velBottom,velHigh);
-	# mref = getSimilarLinearModel(m,velBottom,velHigh);
+	# mref = copy(m);
+	# mref[:,1:end-17] = getSimilarLinearModel(m[:,1:end-17],velBottom,velHigh);
+	mref = getSimilarLinearModel(m,velBottom,velHigh);
 else
 	# 3D SEG slowness model
 	# modelFilename = 3Dseg256256128.mat
 	file = matopen(string(readModelFolder,"/",modelFilename)); DICT = read(file); close(file);
 	m = DICT["VELs"];
 	m = m*1e-3;
-	mref = copy(m);
-	mref[:,:,1:end-17] = getSimilarLinearModel(m[:,:,1:end-17],velBottom,velHigh);
-	# mref = getSimilarLinearModel(m,velBottom,velHigh);
+	# mref = copy(m);
+	# mref[:,:,1:end-17] = getSimilarLinearModel(m[:,:,1:end-17],velBottom,velHigh);
+	mref = getSimilarLinearModel(m,velBottom,velHigh);
 end
 
 sea = abs(m[:] .- minimum(m)) .< 7e-2;
