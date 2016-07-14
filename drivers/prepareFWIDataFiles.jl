@@ -113,6 +113,7 @@ for k = 1:length(omega)
 		Dobsk[i] = fetch(D[I[i]]);
 	end
 	Dobsk = arrangeRemoteCallDataIntoLocalData(Dobsk);
+	Dobsk += 0.005*mean(abs(Dobsk))*(randn(size(Dobsk,1),size(Dobsk,2)) + 1im*randn(size(Dobsk,1),size(Dobsk,2)));
 	omRound = string(round((omega[k]/(2*pi))*100.0)/100.0);
 	Wd_k = (1./(abs(real(Dobsk))+0.1*mean(abs(Dobsk)))) + 1im*(1./(abs(imag(Dobsk))+0.1*mean(abs(Dobsk))));
 	# Wd_k = (1./(0.0*abs(real(Dobsk))+1.0*mean(abs(Dobsk)))) + 1im*(1./(0.0*abs(imag(Dobsk))+1.0*mean(abs(Dobsk))));

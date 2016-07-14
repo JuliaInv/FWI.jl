@@ -16,13 +16,6 @@ for freqIdx = startFrom:(length(contDiv)-1)
 			reqIdx1 = max(1,freqIdx-windowSize+1);
 		end
 		reqIdx2 = freqIdx;
-	elseif mode=="StartSecond"
-		if freqIdx==1
-			continue;
-		else
-			reqIdx1 = max(2,freqIdx-windowSize+1);
-			reqIdx2 = freqIdx;
-		end
 	end
 	currentProblems = contDiv[reqIdx1]:contDiv[reqIdx2+1]-1;
 	println("\n======= New Continuation Stage: selecting batches: ",reqIdx1," to ",reqIdx2,"=======\n");
@@ -53,7 +46,7 @@ for freqIdx = startFrom:(length(contDiv)-1)
 	if method == "projGN"
 		mc,Dc,flag = projGNCG(mc,pInv,pMisTemp,dumpResults = dumpGN);
 	elseif method == "barrierGN"
-		mc,Dc,flag = barrierGNCG(mc,pInv,pMisTemp,rho=10.0,dumpResults = dumpGN);
+		mc,Dc,flag = barrierGNCG(mc,pInv,pMisTemp,rho=1.0,dumpResults = dumpGN);
 	end
 	clear!(pMisTemp);
 end

@@ -1,5 +1,5 @@
 
-export getSSORCGFourthOrderRegularizationPreconditioner,SSORCGParamFourthOrder, applySSORCGFourth, setupSSORCGFourth, wFourthOrderSmoothingNodal
+export getSSORCGFourthOrderRegularizationPreconditioner,SSORCGParamFourthOrder, applySSORCGFourth, setupDoNothing, wFourthOrderSmoothingNodal
 
 
 function wFourthOrderSmoothingNodal(m::Vector, mref::Vector, M::AbstractMesh; Iact=1.0, C=[])	
@@ -24,12 +24,12 @@ type SSORCGParamFourthOrder
 	maxCGIter	::Int64
 end
 
-# function getSSORCGFourthOrderRegularizationPreconditioner(C,M::AbstractMesh,Iact, omega::Float64=1.0,tol::Float64=1e-2,maxCGIter::Int64=100)
-	# return HessianPreconditioner(SSORCGParamFourthOrder(C,M,Iact,omega,tol,maxCGIter),applySSORCGFourth,setupSSORCGFourth);
-# end
-
 function getSSORCGFourthOrderRegularizationPreconditioner(C,M::AbstractMesh,Iact, omega::Float64=1.0,tol::Float64=1e-2,maxCGIter::Int64=100)
-	return HessianPreconditioner(SSORCGParamFourthOrder(C,M,Iact,omega,tol,maxCGIter),applySAAMGFourth,setupSSORCGFourth);
+	return HessianPreconditioner(SSORCGParamFourthOrder(C,M,Iact,omega,tol,maxCGIter),applySSORCGFourth,setupDoNothing);
+end
+
+function getSAAMGFourthOrderRegularizationPreconditioner(C,M::AbstractMesh,Iact, omega::Float64=1.0,tol::Float64=1e-2,maxCGIter::Int64=100)
+	return HessianPreconditioner(SSORCGParamFourthOrder(C,M,Iact,omega,tol,maxCGIter),applySAAMGFourth,setupDoNothing);
 end
 
 
@@ -58,7 +58,7 @@ function applySSORCGFourth(Hs::Function, d2R::SparseMatrixCSC,v::Vector,param)
 	return x;
 end
 
-function setupSSORCGFourth(Hs::Function, d2R::SparseMatrixCSC,param)
+function setupDoNothing(Hs::Function, d2R::SparseMatrixCSC,param)
 	return;
 end
 
@@ -66,7 +66,7 @@ end
 export getSSORCGDoubleTVRegularizationPreconditioner,wDoubleTVNodal,applySSORCGDoubleTV
 
 function getSSORCGDoubleTVRegularizationPreconditioner(C,M::AbstractMesh,Iact, omega::Float64=1.0,tol::Float64=1e-2,maxCGIter::Int64=100)
-	return HessianPreconditioner(SSORCGParamFourthOrder(C,M,Iact,omega,tol,maxCGIter),applySSORCGDoubleTV,setupSSORCGFourth);
+	return HessianPreconditioner(SSORCGParamFourthOrder(C,M,Iact,omega,tol,maxCGIter),applySSORCGDoubleTV,setupDoNothing);
 end
 
 function wDoubleTVNodal(m::Vector, mref::Vector, M::AbstractMesh; Iact=1.0, C=[])	
