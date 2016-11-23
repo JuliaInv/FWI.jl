@@ -1,7 +1,7 @@
 export freqCont;
 
-function freqCont(mc, pInv::InverseParam, pMis::Array{RemoteRef{Channel{Any}}},contDiv::Array{Int64}, windowSize::Int64,
-			resultsFilename::ASCIIString,dumpFun::Function,mode::ASCIIString="Joint",startFrom::Int64 = 1,cycle::Int64=0,method::ASCIIString="projGN")
+function freqCont(mc, pInv::InverseParam, pMis::Array{RemoteChannel},contDiv::Array{Int64}, windowSize::Int64,
+			resultsFilename::String,dumpFun::Function,mode::String="Joint",startFrom::Int64 = 1,cycle::Int64=0,method::String="projGN")
 Dc = 0;
 for freqIdx = startFrom:(length(contDiv)-1)
 	if mode=="1stInit"

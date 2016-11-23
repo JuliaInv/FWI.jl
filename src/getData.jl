@@ -30,7 +30,7 @@ function getData(m,pFor::FWIparam,doClear::Bool=false)
 		Ainv.MG.relativeTol *= 1e-4;
 	end
    
-	Ainv.doClear = 1;
+	
 	if select==[]
 		Qs = Q*wavelet;
 	else
@@ -59,7 +59,7 @@ function getData(m,pFor::FWIparam,doClear::Bool=false)
 	D 			= zeros(Complex128,nrec,nsrc);
 	U 			= zeros(Complex128,n,batchSize);
 	
-	   
+	Ainv.doClear = 1;
 	for k_batch = 1:numBatches
 		batchIdxs = (k_batch-1)*batchSize + 1 : min(k_batch*batchSize,nsrc);
 		if length(length(batchIdxs))==batchSize

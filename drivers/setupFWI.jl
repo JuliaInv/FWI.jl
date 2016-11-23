@@ -1,4 +1,4 @@
-function setupFWI(m,filenamePrefix::ASCIIString,resultsOutputFolderAndPrefix::ASCIIString,plotting::Bool,
+function setupFWI(m,filenamePrefix::String,resultsOutputFolderAndPrefix::String,plotting::Bool,
 		workersFWI::Array{Int64,1}=workers(),maxBatchSize::Int64 = 48,
 		Ainv::AbstractSolver = getMUMPSsolver([],0,0,2), misfun::Function=SSDFun,useFilesForFields::Bool = false)
 

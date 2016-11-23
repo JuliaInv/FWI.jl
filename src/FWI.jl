@@ -69,7 +69,7 @@ function getFWIparam(omega::Array{Float64}, WaveletCoef::Array{Complex128},gamma
 		end
 	end
 	numWorkers = length(ActualWorkers);
-	pFor   = Array(RemoteRef{Channel{Any}},numWorkers*length(omega));
+	pFor   = Array(RemoteChannel,numWorkers*length(omega));
 	SourcesSubInd = Array(Array{Int64,1},numWorkers*length(omega));
 	for k=1:length(omega)
 		getFWIparamInternal(omega[k],WaveletCoef[k], gamma,Sources,Receivers,zeros(FieldsType,0), Mesh, 
@@ -87,7 +87,7 @@ function getFWIparamInternal(omega::Float64, WaveletCoef::Complex128,gamma::Vect
 							Receivers::Union{Vector{Float64},SparseMatrixCSC,Array{Float64,2}},
 							fields::Array{FieldsType}, Mesh::RegularMesh,
 							ForwardSolver:: AbstractSolver, forwardSolveBatchSize::Int64,
-							Workers::Array{Int64}, pFor::Array{RemoteRef{Channel{Any}}},startPF::Int64,SourcesSubInd::Array{Array{Int64,1},1},useFilesForFields::Bool = false)
+							Workers::Array{Int64}, pFor::Array{RemoteChannel},startPF::Int64,SourcesSubInd::Array{Array{Int64,1},1},useFilesForFields::Bool = false)
 	i = startPF; nextidx() = (idx=i; i+=1; idx)
 	nsrc  = size(Sources,2);
 	numWorkers = length(Workers);
@@ -102,7 +102,7 @@ function getFWIparamInternal(omega::Float64, WaveletCoef::Complex128,gamma::Vect
 					end
 					I_k = getSourcesIndicesOfKthWorker(numWorkers,idx - startPF + 1,nsrc)
 					SourcesSubInd[idx] = I_k;
-					pFor[idx] = remotecall(p,getFWIparamInternal, omega,WaveletCoef,  gamma, Sources[:,I_k], Receivers, fields, Mesh, 
+					pFor[idx] = initRemoteChannel(getFWIparamInternal,p, omega,WaveletCoef,  gamma, Sources[:,I_k], Receivers, fields, Mesh, 
 																			copySolver(ForwardSolver),forwardSolveBatchSize,useFilesForFields);
 					wait(pFor[idx]);
 				end
@@ -179,7 +179,7 @@ import jInv.Utils.clear!
 function clear!(pFor::FWIparam)
 	clear!(pFor.ForwardSolver);
 	pFor.Fields = zeros(FieldsType,0);
-	clear(pFor.Mesh);
+	clear!(pFor.Mesh);
 	return pFor;
 end
 

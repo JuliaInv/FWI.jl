@@ -1,5 +1,5 @@
 function prepareFWIDataFiles(m,Minv::RegularMesh,mref,boundsHigh,boundsLow,
-							filenamePrefix::ASCIIString,omega::Array{Float64,1},waveCoef::Array{Complex128,1},
+							filenamePrefix::String,omega::Array{Float64,1},waveCoef::Array{Complex128,1},
 							pad::Int64,ABLpad::Int64,jump::Int64,offset::Int64=prod(Minv.n+1),workerList = workers(), 
 							maxBatchSize::Int64=48, Ainv::AbstractSolver = getMUMPSsolver([],0,0,2),useFilesForFields::Bool = false)
 
@@ -28,7 +28,7 @@ end
 
 
 function prepareJointTravelTimeAndFWIDataFiles(m,Minv::RegularMesh,mref,boundsHigh,boundsLow,
-							filenamePrefix::ASCIIString,omega::Array{Float64,1},waveCoef::Array{Complex128,1},
+							filenamePrefix::String,omega::Array{Float64,1},waveCoef::Array{Complex128,1},
 							pad::Int64,ABLpad::Int64,jump::Int64,offset::Int64=prod(Minv.n+1),workerList = workers(), 
 							maxBatchSize::Int64=48, Ainv::AbstractSolver = getMUMPSsolver([],0,0,2),useFilesForFields::Bool = false)
 
@@ -59,7 +59,7 @@ close(file);
 end
 
 
-function prepareFWIDataFiles2(m, Minv::RegularMesh, filenamePrefix::ASCIIString,dataFullFilenamePrefix::ASCIIString, omega::Array{Float64,1}, 
+function prepareFWIDataFiles2(m, Minv::RegularMesh, filenamePrefix::String,dataFullFilenamePrefix::String, omega::Array{Float64,1}, 
 								waveCoef::Array{Complex128,1}, pad::Int64,ABLpad::Int64,offset::Int64,workerList::Array{Int64,1},maxBatchSize::Int64,
 								Ainv::AbstractSolver,useFilesForFields::Bool = false)
 

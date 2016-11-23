@@ -11,8 +11,10 @@ using  MAT
 using  FWI
 using  ForwardHelmholtz
 using  Multigrid
+println("=======================================================================\n")
+println("===============  TestInversion using Julia solver   ===================\n");
+println("=======================================================================\n")
 
-println("\n===============  TestInversion using Julia solver   ===================\n");
 #############################################################################################################
 modelDir = "../examples";
 
@@ -35,7 +37,7 @@ resultsDir = pwd();
 ########################################################################################################
 dim     = 2;
 pad     = 10;
-jumpSrc = 9;
+jumpSrc = 15;
 newSize = [100,50];
 offset  = ceil(Int64,(newSize[1]*(13.5/13.5)));
 println("Offset is: ",offset)
@@ -57,22 +59,6 @@ if plotting
 	plotModel(mref,true,true,Minv,pad*0,limits);
 end
 
-######################## ITERATIVE SOLVER #############################################
-# levels      = 2;
-# numCores 	= 4;
-# blas_set_num_threads(numCores);
-# maxIter     = 50;
-# relativeTol = 1e-4;
-# relaxType   = "SPAI";
-# relaxParam  = 1.0;
-# relaxPre 	= 2;
-# relaxPost   = 2;
-# cycleType   ='W';
-# coarseSolveType = "NoMUMPS";
-# MG = getMGparam(levels,numCores,maxIter,relativeTol,relaxType,relaxParam,relaxPre,relaxPost,cycleType,coarseSolveType,0.0,0.0,Minv);
-# shift = 0.1;
-# Ainv = getShiftedLaplacianMultigridSolver(Minv, MG,shift);
-
 ######################## DIRECT SOLVER #################################################
 
 # Ainv = getMUMPSsolver([],0,0,2);
@@ -84,7 +70,7 @@ Ainv = getJuliaSolver();
 println("omega*maximum(h): ",omega*maximum(Minv.h)*sqrt(maximum(1./(boundsLow.^2))));
 
 # This is a list of workers for FWI. Ideally they should be on different machines.
-workersFWI = collect(workers()[1]);
+workersFWI = [workers()[1]];
 println("The workers that we allocate for FWI are:");
 println(workersFWI)
 
@@ -121,7 +107,6 @@ boundsLow 	= velocityToSlow(boundsHigh)[1];
 boundsHigh 	= velocityToSlow(t)[1]; t = 0;
 modfun 		= slowToSlowSquared;
 
-
 ########################################################################################################
 # Set up Inversion #################################################################################
 ########################################################################################################
@@ -141,8 +126,43 @@ pInv = getInverseParam(Minv,modfun,regfun,alpha,mref[:],boundsLow,boundsHigh,
                          maxStep=maxStep,pcgMaxIter=cgit,pcgTol=pcgTol,
 						 minUpdate=1e-3, maxIter = maxit,HesPrec=HesPrec);
 mc = copy(mref[:]);
+mc,Dc = freqCont(mc, pInv, pMis,contDiv, 3, resultsFilename,dump,"Joint",1,1,"projGN");
+
+println("======================================================================================\n")
+println("===============  TestInversion using shifted Laplacian multigrid   ===================\n")
+println("======================================================================================\n")
+
+######################## ITERATIVE SOLVER #############################################
+levels      = 2;
+numCores 	= 4;
+BLAS.set_num_threads(numCores);
+maxIter     = 50;
+relativeTol = 1e-5;
+relaxType   = "SPAI";
+relaxParam  = 1.0;
+relaxPre 	= 2;
+relaxPost   = 2;
+cycleType   ='W';
+coarseSolveType = "NoMUMPS";
+MG = getMGparam(levels,numCores,maxIter,relativeTol,relaxType,relaxParam,relaxPre,relaxPost,cycleType,coarseSolveType,0.0,0.0);
+shift = 0.1;
+AinvMG = getShiftedLaplacianMultigridSolver(Minv, MG,shift);
+
+
+(Q,P,pMis,SourcesSubInd,contDiv,Iact,sback,mref,boundsHigh,boundsLow,resultsFilename) = 
+   setupFWI(m,dataFilenamePrefix,resultsFilename,plotting,workersFWI,maxBatchSize,AinvMG,SSDFun);
+
+mref 		= velocityToSlow(mref)[1];
+t    		= copy(boundsLow);
+boundsLow 	= velocityToSlow(boundsHigh)[1];
+boundsHigh 	= velocityToSlow(t)[1]; t = 0;
+modfun 		= slowToSlowSquared;
+
+pInv.mref = mref[:];					 
+mc = copy(mref[:]);
 
 mc,Dc = freqCont(mc, pInv, pMis,contDiv, 3, resultsFilename,dump,"Joint",1,1,"projGN");
+
 
 ##############################################################################################
 rm("DATA_SEG(120,60)_freq0.5.dat");

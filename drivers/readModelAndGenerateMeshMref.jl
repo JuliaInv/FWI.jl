@@ -1,4 +1,4 @@
-function readModelAndGenerateMeshMref(readModelFolder::ASCIIString,modelFilename::ASCIIString,dim::Int64,pad::Int64,domain::Vector{Float64},newSize::Vector=[],velBottom::Float64=0.0,velHigh::Float64=0.0)
+function readModelAndGenerateMeshMref(readModelFolder::String,modelFilename::String,dim::Int64,pad::Int64,domain::Vector{Float64},newSize::Vector=[],velBottom::Float64=0.0,velHigh::Float64=0.0)
 ########################## m,mref are in Velocity here. ###################################
 
 if dim==2

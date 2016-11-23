@@ -57,7 +57,7 @@ m = m';
 # using PyPlot
 # imshow(m')
 pad = 16;
-jump = 5;
+jump = 15;
 offset = 100;
 
 # omega = [0.5./maximum(Minv.h), 0.2./maximum(Minv.h)];
@@ -87,7 +87,7 @@ gamma += attenuation; # adding Attenuation.
 ###################################################################################################
 levels      = 2;
 numCores 	= 4;
-blas_set_num_threads(numCores);
+BLAS.set_num_threads(numCores);
 maxIter     = 50;
 relativeTol = 1e-4;
 relaxType   = "SPAI";
@@ -96,7 +96,7 @@ relaxPre 	= 2;
 relaxPost   = 2;
 cycleType   ='W';
 coarseSolveType = "NoMUMPS";
-MG = getMGparam(levels,numCores,maxIter,relativeTol,relaxType,relaxParam,relaxPre,relaxPost,cycleType,coarseSolveType,0.0,0.0,Minv);
+MG = getMGparam(levels,numCores,maxIter,relativeTol,relaxType,relaxParam,relaxPre,relaxPost,cycleType,coarseSolveType,0.0,0.0);
 shift = 0.15;
 Ainv = getShiftedLaplacianMultigridSolver(Minv, MG,shift);
 
