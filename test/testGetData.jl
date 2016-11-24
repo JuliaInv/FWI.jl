@@ -37,14 +37,10 @@ pFor = getFWIparam(omega, one(Complex128),gamma,Q,R,M,Ainv,[workers()[1]])[1];
 m0   = rand(tuple(n+1...))+1.0
 dobs, = getData(vec(m0),fetch(pFor[1]));
 
-# generate mesh to mesh interpolation
-M2M = Array{Future}(nworkers());
-for k=1:length(M2M)
-	M2M[k] = remotecall(speye,workers()[k],prod(n+1))
-end
+
 # parallelize over sources
 pForp,continuationDivision,SourcesSubInd = getFWIparam(omega, one(Complex128),gamma,Q,R,M,Ainv,workers())
-dobsRF, = getData(vec(m0),pForp,M2M)
+dobsRF, = getData(vec(m0),pForp)
 Dobs = zeros(eltype(dobs),size(dobs));
 for k=1:length(dobsRF)
 	dobsk = fetch(dobsRF[k]);
