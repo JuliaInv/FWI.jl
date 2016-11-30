@@ -18,7 +18,7 @@ for freqIdx = startFrom:(length(contDiv)-1)
 		reqIdx2 = freqIdx;
 	end
 	currentProblems = contDiv[reqIdx1]:contDiv[reqIdx2+1]-1;
-	println("\n======= New Continuation Stage: selecting batches: ",reqIdx1," to ",reqIdx2,"=======\n");
+	println("\n======= New Continuation Stage: selecting continuation batches: ",reqIdx1," to ",reqIdx2,"=======\n");
 	pMisTemp = pMis[currentProblems];
 	pInv.mref = mc[:];	
 	## SETTING UP STOCHASTIC SELECTION

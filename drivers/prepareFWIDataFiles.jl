@@ -11,7 +11,6 @@ writeSrcRcvLocFile(RCVfile,Minv,ABLpad,1);
 	
 dataFullFilenamePrefix = string(filenamePrefix,"_freq");
 gamma = prepareFWIDataFiles2(m, Minv, filenamePrefix,dataFullFilenamePrefix,omega,waveCoef,pad,ABLpad,offset,workerList,maxBatchSize,Ainv);	
-dataFullFilenamePrefix = string(filenamePrefix,"_travelTime");
 
 file = matopen(string(filenamePrefix,"_PARAM.mat"), "w");
 write(file,"boundsLow",boundsLow);
