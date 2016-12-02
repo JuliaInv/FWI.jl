@@ -6,6 +6,7 @@ using  jInv.Mesh
 using  jInv.Utils
 using  jInv.LinearSolvers
 using  jInv.InverseSolve
+using  jInv.Vis
 using  EikonalInv
 using  MAT
 using  FWI
@@ -16,7 +17,7 @@ println("===============  TestInversion using Julia solver   ===================
 println("=======================================================================\n")
 
 #############################################################################################################
-modelDir = "../examples";
+modelDir = pwd();
 
 
 dataDir = pwd();
@@ -28,7 +29,6 @@ plotting = false;
 
 if plotting
 	using  PyPlot
-	include("../../EikonalInv.jl/drivers/plotModel.jl");
 	close("all");
 end
 #############################################################################################################
@@ -85,20 +85,20 @@ prepareFWIDataFiles(m,Minv,mref,boundsHigh,boundsLow,dataFilenamePrefix,omega,on
 ########################################################################################################
 function dump(mc,Dc,iter,pInv,PMis,resultsFilename)
 	fullMc = slowSquaredToVelocity(reshape(Iact*pInv.modelfun(mc)[1] + sback,tuple((pInv.MInv.n+1)...)))[1];
-	Temp = splitext(resultsFilename);
-	if iter>0
-		Temp = string(Temp[1],iter,Temp[2]);
-	else
-		Temp = resultsFilename;
-	end
+	# Temp = splitext(resultsFilename);
+	# if iter>0
+		# Temp = string(Temp[1],iter,Temp[2]);
+	# else
+		# Temp = resultsFilename;
+	# end
 	# if resultsFilename!=""
 		# writedlm(Temp,convert(Array{Float16},fullMc));
 	# end
-	if plotting
-		close(888);
-		figure(888);
-		plotModel(fullMc,true,false,[],0,[1.5,4.8],splitdir(Temp)[2]);
-	end
+	# if plotting
+		# close(888);
+		# figure(888);
+		# plotModel(fullMc,true,false,[],0,[1.5,4.8],splitdir(Temp)[2]);
+	# end
 end
 
 mref 		= velocityToSlow(mref)[1];
