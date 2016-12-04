@@ -174,9 +174,6 @@ rm("SEG(120,60)_FC2_HisGN.mat");
 rm("SEG(120,60)_FC1_HisGN.mat");
 rm("SEG(120,60)_Cyc1_FC2_HisGN.mat");
 rm("SEG(120,60)_Cyc1_FC1_HisGN.mat");
-
-
-rm("SEG*.mat");
 rm("jInv.out");
 
 

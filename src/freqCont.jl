@@ -24,15 +24,21 @@ for freqIdx = startFrom:(length(contDiv)-1)
 	pMisTemp = pMis[currentProblems];
 	pInv.mref = mc[:];	
 	
-	Temp = splitext(resultsFilename);
 	
-	if cycle==0
-		filename = string(Temp[1],"_FC",freqIdx,"_GN",Temp[2]);
-		hisMatFileName  = string(Temp[1],"_FC",freqIdx);
+	if resultsFilename == ""
+		filename = "";
+		hisMatFileName = "";
 	else
-		filename = string(Temp[1],"_Cyc",cycle,"_FC",freqIdx,"_GN",Temp[2]);
-		hisMatFileName  =  string(Temp[1],"_Cyc",cycle,"_FC",freqIdx);
+		Temp = splitext(resultsFilename);
+		if cycle==0
+			filename = string(Temp[1],"_FC",freqIdx,"_GN",Temp[2]);
+			hisMatFileName  = string(Temp[1],"_FC",freqIdx);
+		else
+			filename = string(Temp[1],"_Cyc",cycle,"_FC",freqIdx,"_GN",Temp[2]);
+			hisMatFileName  =  string(Temp[1],"_Cyc",cycle,"_FC",freqIdx);
+		end
 	end
+	
 	# Here we set a dump function for GN for this iteracion of FC
 	function dumpGN(mc,Dc,iter,pInv,PF)
 		dumpFun(mc,Dc,iter,pInv,PF,filename);
