@@ -47,7 +47,7 @@ omega = [0.5,1.0]*2*pi;
 
 # ###################################################################################################################
 dataFilenamePrefix = string(dataDir,"/DATA_SEG",tuple((Minv.n+1)...));
-resultsFilename = string(resultsDir,"/SEG");
+resultsFilenamePrefix = string(resultsDir,"/SEG");
 #######################################################################################################################
 
 
@@ -78,7 +78,7 @@ prepareFWIDataFiles(m,Minv,mref,boundsHigh,boundsLow,dataFilenamePrefix,omega,on
 					offset,workersFWI,maxBatchSize,Ainv);
 
 (Q,P,pMis,SourcesSubInd,contDiv,Iact,sback,mref,boundsHigh,boundsLow,resultsFilename) = 
-   setupFWI(m,dataFilenamePrefix,resultsFilename,plotting,workersFWI,maxBatchSize,Ainv,SSDFun);
+   setupFWI(m,dataFilenamePrefix,resultsFilenamePrefix,plotting,workersFWI,maxBatchSize,Ainv,SSDFun);
 
 ########################################################################################################
 # Setting up the inversion for slowness
@@ -150,7 +150,7 @@ AinvMG = getShiftedLaplacianMultigridSolver(Minv, MG,shift);
 
 
 (Q,P,pMis,SourcesSubInd,contDiv,Iact,sback,mref,boundsHigh,boundsLow,resultsFilename) = 
-   setupFWI(m,dataFilenamePrefix,resultsFilename,plotting,workersFWI,maxBatchSize,AinvMG,SSDFun);
+   setupFWI(m,dataFilenamePrefix,resultsFilenamePrefix,plotting,workersFWI,maxBatchSize,AinvMG,SSDFun);
 
 mref 		= velocityToSlow(mref)[1];
 t    		= copy(boundsLow);
@@ -161,7 +161,7 @@ modfun 		= slowToSlowSquared;
 pInv.mref = mref[:];					 
 mc = copy(mref[:]);
 
-mc,Dc = freqCont(mc, pInv, pMis,contDiv, 3, resultsFilename,dump,"Joint",1,1,"projGN");
+mc,Dc = freqCont(mc, pInv, pMis,contDiv, 3, resultsFilename,dump,"Joint",1,0,"projGN");
 
 
 ##############################################################################################
@@ -170,6 +170,13 @@ rm("DATA_SEG(120,60)_freq1.0.dat");
 rm("DATA_SEG(120,60)_rcvMap.dat");
 rm("DATA_SEG(120,60)_srcMap.dat");
 rm("DATA_SEG(120,60)_PARAM.mat");
+rm("SEG(120,60)_FC2_HisGN.mat");
+rm("SEG(120,60)_FC1_HisGN.mat");
+rm("SEG(120,60)_Cyc1_FC2_HisGN.mat");
+rm("SEG(120,60)_Cyc1_FC1_HisGN.mat");
+
+
+rm("SEG*.mat");
 rm("jInv.out");
 
 
