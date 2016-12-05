@@ -4,7 +4,7 @@ function freqCont(mc, pInv::InverseParam, pMis::Array{RemoteChannel},contDiv::Ar
 			resultsFilename::String,dumpFun::Function,mode::String="Joint",startFrom::Int64 = 1,cycle::Int64=0,method::String="projGN")
 Dc = 0;
 flag = -1;
-His = 0;
+HIS = [];
 for freqIdx = startFrom:(length(contDiv)-1)
 	if mode=="1stInit"
 		reqIdx1 = freqIdx;
@@ -56,10 +56,12 @@ for freqIdx = startFrom:(length(contDiv)-1)
 		# write(file,"His",His);
 		close(file);
 	end
+	His.Dc = []
+	push!(HIS,His)
 	
 	clear!(pMisTemp);
 end
-return mc,Dc,flag,His;
+return mc,Dc,flag,HIS;
 end
 
 
