@@ -1,7 +1,30 @@
 export freqCont;
 
+"""
+	function freqCont
+
+	Frequency continuation procedure for running FWI. 
+	This function runs GaussNewton on misfit functions defined by the continuation division array contDiv.
+	
+	Input:
+		mc    		- current model
+		pInv		- Inverse param
+		pMis 		- misfit params (remote)
+		contDiv		- continuation division. Assumes that pMis is contiunous with respecto to the division. 
+					  If the tasks (frequencies) are divided in pMis {1,2} {3,4} {5,6} then contDiv = [1,3,5,7] (similarly to the ptr array in SparseMatrixCSC)
+		windowSize  - How many frequencies to treat at once at the most.
+		resultsFilename - a filename for saving the intermediate results according to the GN and continuation (FC) iterations (done in dumpFun())
+		dumpFun     - a function for plotting, saving and doing all the things with the intermidiate results.
+		mode        - either "1stInit" or anything else. 
+					  1stInit will use the first group of misfits as an initialization and will not include it together with the next group of misfits.
+		startFrom   - a start index for the continuation. Usefull when our run broke in the middle of the iterations.
+		cycle       - just for identifying different runs when saving the results.
+		method      - "projGN" or "barrierGN"
+		
+"""
+
 function freqCont(mc, pInv::InverseParam, pMis::Array{RemoteChannel},contDiv::Array{Int64}, windowSize::Int64,
-			resultsFilename::String,dumpFun::Function,mode::String="Joint",startFrom::Int64 = 1,cycle::Int64=0,method::String="projGN")
+			resultsFilename::String,dumpFun::Function,mode::String="",startFrom::Int64 = 1,cycle::Int64=0,method::String="projGN")
 Dc = 0;
 flag = -1;
 HIS = [];
@@ -12,7 +35,7 @@ for freqIdx = startFrom:(length(contDiv)-1)
 			reqIdx1 = max(2,freqIdx-windowSize+1);
 		end
 		reqIdx2 = freqIdx;
-	elseif mode=="Joint"
+	else
 		reqIdx1 = freqIdx;
 		if freqIdx > 1
 			reqIdx1 = max(1,freqIdx-windowSize+1);
@@ -53,7 +76,8 @@ for freqIdx = startFrom:(length(contDiv)-1)
 	if hisMatFileName != ""
 		file = matopen(string(hisMatFileName,"_HisGN.mat"), "w");
 		### PUT THE CONTENT OF "HIS" INTO THE MAT FILE ###
-		# write(file,"His",His);
+		His.Dc = [];
+		write(file,"His",His);
 		close(file);
 	end
 	His.Dc = []
