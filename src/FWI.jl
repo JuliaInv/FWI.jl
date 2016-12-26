@@ -190,5 +190,5 @@ include("getSensMatVec.jl")
 include("getSensTMatVec.jl")
 include("FourthOrderHesPrec.jl")
 include("freqCont.jl")
-#include("timeDomainFWI.jl")
+include("timeDomainFWI.jl")
 end
