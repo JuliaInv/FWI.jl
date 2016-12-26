@@ -31,17 +31,18 @@ function getSensMatVec(v::Vector,m::Vector,pFor::FWIparam)
 	## ALL AT ONCE CODE
 	H = spzeros(Complex128,n,n);
 	if isa(Ainv,ShiftedLaplacianMultigridSolver)
-		H = GetHelmholtzOperator(M,m,omega, gamma, true,true);
+		H = GetHelmholtzOperator(M,m,omega, gamma, true,useSommerfeldBC);
 		Ainv = updateParam(Ainv,M,m,omega);
 		H = H + GetHelmholtzShiftOP(m, omega,Ainv.shift); 
 		H = H';
 		# H is actually shifted laplacian now...
 	elseif isa(Ainv,JuliaSolver)
-		H = GetHelmholtzOperator(M,m,omega, gamma, true,true);
+		H = GetHelmholtzOperator(M,m,omega, gamma, true,useSommerfeldBC);
 	end
 	
 	Jv = zeros(Complex128,nrec,nsrc);
-	t = ((1+1im*vec(gamma)).*v);
+	t = ((1-1im*vec(gamma./omega)).*v);
+	# t = ((1+1im*vec(gamma)).*v);
 	for k_batch = 1:numBatches
 		batchIdxs = (k_batch-1)*batchSize + 1 : min(k_batch*batchSize,nsrc);
 		if pFor.useFilesForFields

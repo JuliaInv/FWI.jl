@@ -26,17 +26,16 @@ function getSensTMatVec(v::Vector,m::Vector,pFor::FWIparam)
 	numBatches 	= ceil(Int64,nsrc/batchSize);
 	n = prod(M.n+1);
 	
-	# ALL AT ONCE CODE
 	
 	H = spzeros(Complex128,n,n);
 	if isa(Ainv,ShiftedLaplacianMultigridSolver)
-		H = GetHelmholtzOperator(M,m,omega, gamma, true,true);
+		H = GetHelmholtzOperator(M,m,omega, gamma, true,useSommerfeldBC);
 		Ainv = updateParam(Ainv,M,m,omega);
 		H = H + GetHelmholtzShiftOP(m, omega,Ainv.shift); 
 		H = H';
 		# H is actually shifted laplacian now...
 	elseif isa(Ainv,JuliaSolver)
-		H = GetHelmholtzOperator(M,m,omega, gamma, true,true);
+		H = GetHelmholtzOperator(M,m,omega, gamma, true,useSommerfeldBC);
 	end
 	
 	JTv = zeros(Float64,n)
@@ -54,15 +53,9 @@ function getSensTMatVec(v::Vector,m::Vector,pFor::FWIparam)
 		else
 			U = pFor.Fields[:,batchIdxs];
 		end 
+		# V = conj((1+1im*vec(gamma)).*U).*V; 
+		V = conj((1-1im*vec(gamma./omega)).*U).*V;
 		
-		V = conj((1+1im*vec(gamma)).*U).*V; 
-		
-		# for jj=1:length(batchIdxs)
-			# jj_b = batchIdxs[jj];
-			# for ii = 1:n
-				# @inbounds V[ii,jj] *= conj((1.0+1im*gamma[ii])*U[ii,jj]); # *U[ii,jj_b]
-			# end
-		# end
 		JTv += omega^2*vec(real(sum(V,2)));
 	end
 	
@@ -74,16 +67,10 @@ function getSensTMatVec(v::Vector,m::Vector,pFor::FWIparam)
 	# V = P*Vdatashape;
 	# V,Ainv = solveLinearSystem(H,V,Ainv,1)   # Lam = ForwardSolver\(P*V);
 		
-	# # JTv    = conj((1+1im*vec(gamma)).*U).*V; 
+	# # JTv    = conj((1-1im*vec(gamma./omega)).*U).*V; 
 	# # V      = 0;
 	# # JTv	 = omega^2*vec(sum(real(JTv),2));
 
-	# for jj=1:size(U,2)		
-		# for ii = 1:size(U,1)
-			# @inbounds V[ii,jj] *= conj((1.0+1im*gamma[ii])*U[ii,jj]);
-		# end
-	# end
-	# JTv	  = omega^2*vec(real(sum(V,2)));
     return JTv
 end
 

@@ -19,6 +19,8 @@ import jInv.ForwardShare.ForwardProbType
 
 FieldsType = Complex32
 
+useSommerfeldBC = false;
+
 fieldsFilenamePrefix = "tempFWIfields"
 
 function getFieldsFileName(omega::Float64)
@@ -188,4 +190,5 @@ include("getSensMatVec.jl")
 include("getSensTMatVec.jl")
 include("FourthOrderHesPrec.jl")
 include("freqCont.jl")
+#include("timeDomainFWI.jl")
 end

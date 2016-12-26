@@ -4,8 +4,8 @@ function setupFWI(m,filenamePrefix::String,resultsOutputFolderAndPrefix::String,
 
 		
 file = matopen(string(filenamePrefix,"_PARAM.mat"));
-n_cells = read(file,"MinvN");
-OmegaDomain = read(file,"MinvOmega");
+n_cells = read(file,"n");
+OmegaDomain = read(file,"domain");
 Minv = getRegularMesh(OmegaDomain,n_cells);
 gamma = read(file,"gamma");
 omega = read(file,"omega");

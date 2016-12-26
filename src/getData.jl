@@ -20,7 +20,7 @@ function getData(m,pFor::FWIparam,doClear::Bool=false)
 	# allocate space for data and fields
 	n = prod(M.n+1);
 	# ALL AT ONCE DIRECT CODE
-	H = GetHelmholtzOperator(M,m,omega, gamma, true,true);
+	H = GetHelmholtzOperator(M,m,omega, gamma, true,useSommerfeldBC);
 	
 	if isa(Ainv,ShiftedLaplacianMultigridSolver)
 		Ainv = updateParam(Ainv,M,m,omega);
@@ -69,6 +69,12 @@ function getData(m,pFor::FWIparam,doClear::Bool=false)
 		end
 		U,Ainv = solveLinearSystem(H,U,Ainv,0)
 		
+		
+		# pic = round(Int64,rand()*1000);
+		# u = reshape(real(U[:,1]),M.n[1]+1,M.n[2]+1);
+		# figure(pic)
+		# imshow(u'); colorbar();
+		
 		Ainv.doClear = 0;
 		D[:,batchIdxs]      = (P'*U);
 		
@@ -80,6 +86,10 @@ function getData(m,pFor::FWIparam,doClear::Bool=false)
 			end
 		end
 	end
+	
+	# pic = round(Int64,rand()*1000);
+	# figure(pic)
+	# imshow(real(D')); colorbar();
 	
 	if isa(Ainv,ShiftedLaplacianMultigridSolver)
 		Ainv.MG.relativeTol *= 1e+4;

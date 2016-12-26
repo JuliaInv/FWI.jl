@@ -77,8 +77,8 @@ Q = generateSrcRcvProjOperators(Minv.n+1,srcNodeMap);
 P = generateSrcRcvProjOperators(Minv.n+1,rcvNodeMap);
 
 ABLPad = pad+5;
-gamma = getABL(Minv,true,ones(Int64,Minv.dim)*ABLPad,1.0);
-attenuation = 0.001;
+gamma = getABL(Minv,true,ones(Int64,Minv.dim)*ABLPad,omega[1]);
+attenuation = 0.01*omega[1];
 gamma += attenuation; # adding Attenuation.
 
 # Ainv = getMUMPSsolver([],0,0,0);
@@ -114,7 +114,7 @@ println("Number of Sources: ",size(Q,2));
 N = prod(Minv.n+1);
 Iact = speye(N);
 mask = zeros(N);
-mask[gamma[:] .>= 0.5*maximum(gamma)] = 1;
+mask[gamma[:] .>= 0.2*maximum(gamma)] = 1;
 Iact = Iact[:,mask .== 0.0];
 
 

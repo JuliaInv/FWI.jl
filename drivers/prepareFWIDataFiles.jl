@@ -16,8 +16,8 @@ file = matopen(string(filenamePrefix,"_PARAM.mat"), "w");
 write(file,"boundsLow",boundsLow);
 write(file,"boundsHigh",boundsHigh);
 write(file,"mref",mref);
-write(file,"MinvOmega",Minv.domain);
-write(file,"MinvN",Minv.n);
+write(file,"domain",Minv.domain);
+write(file,"n",Minv.n);
 write(file,"gamma",gamma);
 write(file,"pad",pad);
 write(file,"omega",omega);
@@ -47,8 +47,8 @@ file = matopen(string(filenamePrefix,"_PARAM.mat"), "w");
 write(file,"boundsLow",boundsLow);
 write(file,"boundsHigh",boundsHigh);
 write(file,"mref",mref);
-write(file,"MinvOmega",Minv.domain);
-write(file,"MinvN",Minv.n);
+write(file,"domain",Minv.domain);
+write(file,"n",Minv.n);
 write(file,"gamma",gamma);
 write(file,"pad",pad);
 write(file,"omega",omega);
@@ -61,8 +61,7 @@ end
 function prepareFWIDataFiles2(m, Minv::RegularMesh, filenamePrefix::String,dataFullFilenamePrefix::String, omega::Array{Float64,1}, 
 								waveCoef::Array{Complex128,1}, pad::Int64,ABLpad::Int64,offset::Int64,workerList::Array{Int64,1},maxBatchSize::Int64,
 								Ainv::AbstractSolver,useFilesForFields::Bool = false)
-
-
+########################## m is in Velocity here. ###################################
 println("maxOmega*maxKappaSq*h: should be below 0.6");
 println(omega[end]*maximum(Minv.h)*(1./minimum(m)));
 
@@ -78,8 +77,9 @@ Q = Q.*1/(norm(Minv.h)^2);
 println("We have ",size(Q,2)," sources");
 # compute observed data
 
-gamma = getABL(Minv,true,ones(Int64,Minv.dim)*ABLpad,1.0);
-attenuation = 0.01;
+ABLamp = getMaximalFrequency(1./(minimum(m).^2),Minv);
+gamma = getABL(Minv,true,ones(Int64,Minv.dim)*ABLpad,ABLamp);
+attenuation = 0.01*ABLamp;
 gamma += attenuation; # adding Attenuation.
 
 println("~~~~~~~ Getting data FWI: ~~~~~~~");

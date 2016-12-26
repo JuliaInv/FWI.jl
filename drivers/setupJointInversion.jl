@@ -1,10 +1,10 @@
-function setupJointInversion(m,filenamePrefix::ASCIIString,resultsOutputFolderAndPrefix::ASCIIString,plotting::Bool,
+function setupJointInversion(m,filenamePrefix::String,resultsOutputFolderAndPrefix::String,plotting::Bool,
 		workersFWI::Array{Int64,1}=workers(),maxBatchSize::Int64 = 48,
 		Ainv::AbstractSolver = getMUMPSsolver([],0,0,2),ignoreEik::Bool=false, misfun::Function=SSDFun,beta::Float64=1.0,useFilesForFields::Bool = false)
 		
 file = matopen(string(filenamePrefix,"_PARAM.mat"));
-n_cells = read(file,"MinvN");
-OmegaDomain = read(file,"MinvOmega");
+n_cells = read(file,"n");
+OmegaDomain = read(file,"domain");
 Minv = getRegularMesh(OmegaDomain,n_cells);
 gamma = read(file,"gamma");
 omega = read(file,"omega");

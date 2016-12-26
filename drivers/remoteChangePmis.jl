@@ -1,4 +1,4 @@
-function updateWd(pMis::Array{RemoteRef{Channel{Any}}},Dc::Array{RemoteRef{Channel{Any}}})
+function updateWd(pMis::Array{RemoteChannel},Dc::Array{RemoteChannel})
 @sync begin
 	@async begin
 		for k=1:length(pMis)
@@ -9,7 +9,7 @@ end
 return pMis;
 end
 
-function updateWd(pMisRF::RemoteRef{Channel{Any}},Dc::RemoteRef{Channel{Any}})
+function updateWd(pMisRF::RemoteChannel,Dc::RemoteChannel)
 pMis  = take!(pMisRF)
 Dc = fetch(Dc);
 pMis.Wd = 1./(real(Dc - pMis.dobs) + 1e-3*mean(abs(pMis.dobs[:]))) + 1im./(imag(Dc - pMis.dobs) + 1e-3*mean(abs(pMis.dobs[:])));
@@ -18,7 +18,7 @@ return pMisRF;
 end
 
 
-function multWd(pMis::Array{RemoteRef{Channel{Any}}},beta::Float64)
+function multWd(pMis::Array{RemoteChannel},beta::Float64)
 @sync begin
 	@async begin
 		for k=1:length(pMis)
@@ -29,7 +29,7 @@ end
 return pMis;
 end
 
-function multWd(pMisRF::RemoteRef{Channel{Any}},beta::Float64)
+function multWd(pMisRF::RemoteChannel,beta::Float64)
 pMis  = take!(pMisRF)
 pMis.Wd *= beta;
 put!(pMisRF,pMis)

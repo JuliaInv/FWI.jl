@@ -7,7 +7,7 @@ Multigrid preconditioner with BiCGSTAB.
 
 # Requirements
 
-This package is intended to use with julia versions 0.4.x.
+This package is intended to use with julia versions 0.5.x.
 
 This package is an add-on for jInv, which needs to be installed.
 
