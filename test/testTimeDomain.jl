@@ -18,7 +18,7 @@ dataDir = pwd();
 include("../drivers/prepareFWIDataFiles.jl");
 include("../drivers/readModelAndGenerateMeshMref.jl");
 
-plotting = true;
+plotting = false;
 
 if plotting
 	using  PyPlot
@@ -31,8 +31,8 @@ resultsDir = pwd();
 dim     = 2;
 pad     = 40;
 ABLpad = pad+10;
-jumpSrc = 80;
-newSize = [250,120];
+jumpSrc = 250;
+newSize = [200,100];
 offset  = ceil(Int64,(newSize[1]*(13.5/13.5)));
 println("Offset is: ",offset)
 (m,Minv,mref,boundsHigh,boundsLow) = readModelAndGenerateMeshMref(modelDir,"SEGmodel2Dsalt.dat",dim,pad,[0.0,13.5,0.0,4.2],newSize,1.752,2.9);
@@ -56,10 +56,10 @@ end
 
 ############################ Time Domain Data ##################################################
 dt = 0.002;
-T = 14.0;
+T = 0.2;
 fm = 3.0;
 workerList = workers();
-# prepareFWIDataFilesFromTime(m,Minv,mref,boundsHigh,boundsLow,timeDataFilenamePrefix,omega,pad,ABLpad,jumpSrc,offset,workerList,T,dt,fm,0.0000);
+prepareFWIDataFilesFromTime(m,Minv,mref,boundsHigh,boundsLow,timeDataFilenamePrefix,omega,pad,ABLpad,jumpSrc,offset,workerList,T,dt,fm,0.0000);
 
 RCVfile = string(timeDataFilenamePrefix,"_rcvMap.dat");
 SRCfile = string(timeDataFilenamePrefix,"_srcMap.dat");
@@ -88,7 +88,7 @@ workersFWI = [workers()[1]];
 println("The workers that we allocate for frequency FWI are:");
 println(workersFWI)
 maxBatchSize = 10;
-# prepareFWIDataFiles(m,Minv,mref,boundsHigh,boundsLow,dataFilenamePrefix,omega,waveCoef, pad,ABLpad,jumpSrc,offset,workersFWI,maxBatchSize,Ainv);
+prepareFWIDataFiles(m,Minv,mref,boundsHigh,boundsLow,dataFilenamePrefix,omega,waveCoef, pad,ABLpad,jumpSrc,offset,workersFWI,maxBatchSize,Ainv);
 ### Read receivers and sources files
 RCVfile = string(dataFilenamePrefix,"_rcvMap.dat");
 SRCfile = string(dataFilenamePrefix,"_srcMap.dat");
@@ -104,6 +104,12 @@ for k = 1:length(omega)
 	DobsFD[k] = Dk;
 	WdFD[k] = Wk;
 end   
+
+
+# for jj = 1:length(omega)
+	# println(vecnorm(DobsTD[jj] - DobsFD[jj]));
+# end
+
 
 
 # if plotting
@@ -131,16 +137,23 @@ if plotting
 end
 
 ##############################################################################################
-# rm("DATA_SEG(120,60)_freq0.5.dat");
-# rm("DATA_SEG(120,60)_freq1.0.dat");
-# rm("DATA_SEG(120,60)_rcvMap.dat");
-# rm("DATA_SEG(120,60)_srcMap.dat");
-# rm("DATA_SEG(120,60)_PARAM.mat");
-# rm("SEG(120,60)_FC2_HisGN.mat");
-# rm("SEG(120,60)_FC1_HisGN.mat");
-# rm("SEG(120,60)_Cyc1_FC2_HisGN.mat");
-# rm("SEG(120,60)_Cyc1_FC1_HisGN.mat");
-# rm("jInv.out");
+for k = 1:length(omega)
+	omRound = string(round((omega[k]/(2*pi))*100.0)/100.0);
+	rm(string(dataFilenamePrefix,"_freq",omRound,".dat"));
+	timeDataFilenamePrefix
+	rm(string(timeDataFilenamePrefix,"_freq",omRound,".dat"));
+end
+
+rm(string(timeDataFilenamePrefix,"_rcvMap.dat"));
+rm(string(timeDataFilenamePrefix,"_srcMap.dat"));
+rm(string(dataFilenamePrefix,"_rcvMap.dat"));
+rm(string(dataFilenamePrefix,"_srcMap.dat"));
+rm(string(dataFilenamePrefix,"_PARAM.mat"));
+rm(string(timeDataFilenamePrefix,"_PARAM.mat"));
+rm(string(timeDataFilenamePrefix,"_timeDomain.mat"));
+
+
+
 
 
 

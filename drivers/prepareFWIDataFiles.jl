@@ -187,13 +187,13 @@ Mask = limitDataToOffset(Mask,srcNodeMap,rcvNodeMap,offset);
 
 
 rickt = getRickerFunction(T,dt,fm);
-computeTimeDomain = false;
+computeTimeDomain = true;
 
 if computeTimeDomain
 	pFor,SourcesSubInd = getTimeDomainFWIParam(gamma[:],Q,P,Mask,Minv,rickt,dt,T,workerList);
-	tic()
+	# tic()
 	(DRF,pFor) = getData(velocityToSlowSquared(m[:])[1],pFor,ones(length(pFor)),true);
-	toc()
+	# toc()
 	DobsTime = Array(Array{Float64,2},size(Q,2));
 	for k=1:length(pFor)
 		Dt = fetch(DRF[k]);

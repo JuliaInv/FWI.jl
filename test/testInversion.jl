@@ -163,7 +163,7 @@ mc = copy(mref[:]);
 
 mc,Dc = freqCont(mc, pInv, pMis,contDiv, 3, resultsFilename,dump,"Joint",1,0,"projGN");
 
-
+clear!(pMis);
 ##############################################################################################
 rm("DATA_SEG(120,60)_freq0.5.dat");
 rm("DATA_SEG(120,60)_freq1.0.dat");
