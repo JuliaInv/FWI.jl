@@ -19,7 +19,7 @@ import jInv.ForwardShare.ForwardProbType
 
 FieldsType = Complex32
 
-useSommerfeldBC = false;
+useSommerfeldBC = true;
 
 fieldsFilenamePrefix = "tempFWIfields"
 
@@ -191,4 +191,5 @@ include("getSensTMatVec.jl")
 include("FourthOrderHesPrec.jl")
 include("freqCont.jl")
 include("timeDomainFWI.jl")
+include("firstArivalPicking.jl")
 end

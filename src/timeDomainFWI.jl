@@ -4,7 +4,7 @@ type timeDomainFWIparam
     gamma					:: Vector{Float64}     # attenuation
     Sources					:: Union{Vector{Float64},SparseMatrixCSC,Array{Float64,2}}   # Sources
     Receivers				:: Union{Vector{Float64},SparseMatrixCSC,Array{Float64,2}}
-	ReceiverMask			:: Array
+	ReceiverMask			:: Array{Int8}
 	Mesh      				:: RegularMesh
 	ricker					:: Array
 	dt						:: Float64
@@ -52,7 +52,9 @@ function getRickerFunction(T,dt,fm)
 	nt = convert(Int64,round(T/dt));
 	t  = dt:dt:nt*dt;
 	ricker = (1-(2*pi^2*fm^2).*((t-3*Td).^2)).*exp(-((t-3*Td).^2*(pi*fm).^2));
-	return ricker;
+	zeroOffset = convert(Int64,round(((3*Td)./dt) + 1));
+	widthOfHalfRicker = round(Int64,(sqrt(8)/(pi*fm))/dt);
+	return ricker,zeroOffset,widthOfHalfRicker;
 end
 
 
@@ -69,38 +71,68 @@ RecMask     = pFor.ReceiverMask
 nrec  		= size(P,2) 
 nsrc  		= size(Q,2)
 	
-D = Array(Array{Float64,2},nsrc);
+D = Array(Array{Float32,2},nsrc);
 	
 nt = convert(Int64,round(T/dt));
+
 # A = ForwardHelmholtz.getNodalLaplacianMatrix(Mesh);
 
 N = prod(Mesh.n+1);
-U = zeros(Float64,N,nt);
 
-
+u_ip1 = zeros(N);
+u_im1 = zeros(N);
+u_i   = zeros(N);
 temp = zeros(N);
-## m is assumed to be slowness squared here.
-vsq = 1./m;
-gamma = gamma.*(dt/2);
 
+## m is assumed to be slowness squared here.
+vsq = dt^2./m;
+gammadt = gamma.*(0.5*dt);
+tic();
 for k = 1:nsrc
-	# Dk = zeros(Float64,sum(RecMask[:,k] != 0),nt);
+	println("At source ",k," out of ",nsrc);
 	q = vec(Q[:,k]).*vsq;
-	# println("Simulating source ",k," in time domain");
-	# tic()
-	for i = 2:nt-1
-		# U[:,i+1] = (-dt^2*(v.^2).*(A*U[:,i]) + 2*U[:,i] - U[:,i-1] + gamma.*(dt/2).*U[:,i-1]+ rickFunc[i]*dt^2*((v.^2).*q)  )./(1+gamma*(dt/2));
-		multOpNeumann!(Mesh,U[:,i],temp,Lap2DStencil);
-		# U[:,i+1] = (-dt^2*vsq.*temp + 2*U[:,i] - U[:,i-1] + gamma.*U[:,i-1]+ (rickFunc[i]*dt^2)*q)./(1+gamma);
-		@simd for j=1:size(U,1)
-			@inbounds U[j,i+1] = (-dt^2*vsq[j].*temp[j] + 2*U[j,i] - U[j,i-1] + gamma[j].*U[j,i-1]+ (rickFunc[i]*dt^2)*q[j])./(1+gamma[j]);
-		end
-	end
-	# toc()
-	Dk = P'*U;
-	Dk = vec(RecMask[:,k].!=0.0).*Dk;
-	D[k] = Dk;
-	U[:] = 0.0;
+	Dk = calcTrace(Mesh,N,nt,P,vsq,gammadt,q,u_ip1,u_im1,u_i,temp,rickFunc);
+	D[k] = vec(RecMask[:,k]).*Dk;
+	u_ip1[:] = 0.0;
+	u_im1[:] = 0.0;
+	u_i[:] = 0.0;
 end
+println("time domain get data took ",toc()," seconds.");
+
 return D,pFor
+end
+
+function calcTrace(Mesh::RegularMesh,n::Int64,nt::Int64,P::SparseMatrixCSC,vsq::Array{Float64,1},gammadt::Array{Float64,1},q::Array{Float64,1},u_ip1::Array{Float64,1},u_im1::Array{Float64,1},u_i::Array{Float64,1},temp::Array{Float64,1},rickFunc::Array{Float64})
+Dk    = zeros(Float32,size(P,2),nt);
+# tic()	
+# for i = 2:nt-1
+	## Code with 3 u's
+	# multOpNeumann!(Mesh,u_i,temp,Lap2DStencil);
+	# u_ip1 = (-vsq.*temp + 2.0*u_i - u_im1 + gammadt.*u_im1+ rickFunc[i]*q)./(1.0+gammadt);
+	# Dk[:,i+1] = P'*u_ip1;
+	# t = u_im1;
+	# u_im1 = u_i;
+	# u_i = u_ip1;
+	# u_ip1 = t;
+# end
+# toc()
+
+for i = 2:nt-1
+	### Code with 3 u's
+	multOpNeumann!(Mesh,u_i,temp,Lap2DStencil);
+	rfi = rickFunc[i];
+	@simd for j=1:n
+		@inbounds temp[j] = -vsq[j]*temp[j] + rfi*q[j]
+	end
+	@simd for j=1:n
+		@inbounds u_ip1[j] = (temp[j] + 2.0*u_i[j] - u_im1[j] + gammadt[j]*u_im1[j] )/(1.0+gammadt[j]);
+	end
+	Dk[:,i+1] = P'*u_ip1;
+	t = u_im1;
+	u_im1 = u_i;
+	u_i = u_ip1;
+	u_ip1 = t;
+end
+
+return Dk;
 end

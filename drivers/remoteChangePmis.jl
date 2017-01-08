@@ -2,7 +2,7 @@ function updateWd(pMis::Array{RemoteChannel},Dc::Array{RemoteChannel})
 @sync begin
 	@async begin
 		for k=1:length(pMis)
-			pMis[k] = remotecall_fetch(pMis[k].where,updateWd,pMis[k],Dc[k]);
+			pMis[k] = remotecall_fetch(updateWd,pMis[k].where,pMis[k],Dc[k]);
 		end
 	end
 end
@@ -22,7 +22,7 @@ function multWd(pMis::Array{RemoteChannel},beta::Float64)
 @sync begin
 	@async begin
 		for k=1:length(pMis)
-			pMis[k] = remotecall_fetch(pMis[k].where,multWd,pMis[k],beta);
+			pMis[k] = remotecall_fetch(multWd,pMis[k].where,pMis[k],beta);
 		end
 	end
 end

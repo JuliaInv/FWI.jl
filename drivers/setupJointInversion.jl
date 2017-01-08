@@ -14,7 +14,8 @@ if length(omega)==1
 	omega = [omega];
 	waveCoef = [waveCoef];
 end
-
+warn("Assuming wavelet coeficient is taken into account in the observed data. RHS in FWI is just a delta func.");
+waveCoef = ones(Complex128,size(waveCoef))
 
 if ignoreEik==false
 	HO = read(file,"HO");

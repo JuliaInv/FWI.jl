@@ -5,7 +5,7 @@ export getSSORCGFourthOrderRegularizationPreconditioner,SSORCGParamFourthOrder, 
 function wFourthOrderSmoothingNodal(m::Vector, mref::Vector, M::AbstractMesh; Iact=1.0, C=[])	
 	dm = m.-mref;
 	d2R = wdiffusionRegNodal(m,mref,M,Iact = Iact,C = C)[3];
-	clear(M);
+	clear!(M);
 	d2R = d2R'*d2R;
 	dR  = d2R*dm;
 	Rc  = 0.5*dot(dm,dR);
