@@ -26,8 +26,8 @@ R      = copy(Q)
 
 # get param without parallelizaion
 ABLpad = 2;
-gamma = getABL(M,true,ones(Int64,M.dim)*ABLpad,1.0);
-attenuation = 0.01;
+gamma = getABL(M,true,ones(Int64,M.dim)*ABLpad,8*pi);
+attenuation = 0.01*4*pi;
 gamma += attenuation; # adding Attenuation.
 gamma = gamma[:];
 Ainv = getJuliaSolver();

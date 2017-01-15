@@ -32,8 +32,8 @@ function getSensMatVec(v::Vector,m::Vector,pFor::FWIparam)
 	H = spzeros(Complex128,n,n);
 	if isa(Ainv,ShiftedLaplacianMultigridSolver)
 		H = GetHelmholtzOperator(M,m,omega, gamma, true,useSommerfeldBC);
-		Ainv = updateParam(Ainv,M,m,omega);
-		H = H + GetHelmholtzShiftOP(m, omega,Ainv.shift); 
+		Ainv.helmParam = HelmholtzParam(M,gamma,m,omega,true,useSommerfeldBC);
+		H = H + GetHelmholtzShiftOP(m, omega,Ainv.shift[1]); 
 		H = H';
 		# H is actually shifted laplacian now...
 	elseif isa(Ainv,JuliaSolver)

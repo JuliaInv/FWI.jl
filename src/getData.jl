@@ -23,8 +23,8 @@ function getData(m,pFor::FWIparam,doClear::Bool=false)
 	H = GetHelmholtzOperator(M,m,omega, gamma, true,useSommerfeldBC);
 	
 	if isa(Ainv,ShiftedLaplacianMultigridSolver)
-		Ainv = updateParam(Ainv,M,m,omega);
-		H = H + GetHelmholtzShiftOP(m, omega,Ainv.shift); 
+		Ainv.helmParam = HelmholtzParam(M,gamma,m,omega,true,useSommerfeldBC);
+		H = H + GetHelmholtzShiftOP(m, omega,Ainv.shift[1]); 
 		H = H';
 		# H is actually shifted laplacian now...
 		Ainv.MG.relativeTol *= 1e-4;

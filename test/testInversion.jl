@@ -146,7 +146,9 @@ cycleType   ='W';
 coarseSolveType = "NoMUMPS";
 MG = getMGparam(levels,numCores,maxIter,relativeTol,relaxType,relaxParam,relaxPre,relaxPost,cycleType,coarseSolveType,0.0,0.0);
 shift = 0.1;
-AinvMG = getShiftedLaplacianMultigridSolver(Minv, MG,shift);
+Hparam = HelmholtzParam(Minv,zeros(0),zeros(0),0.0,true,true);
+AinvMG = getShiftedLaplacianMultigridSolver(Hparam, MG,shift);
+
 
 
 (Q,P,pMis,SourcesSubInd,contDiv,Iact,sback,mref,boundsHigh,boundsLow,resultsFilename) = 
