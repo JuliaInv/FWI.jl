@@ -38,7 +38,7 @@ resultsDir = pwd();
 dim     = 2;
 pad     = 10;
 jumpSrc = 15;
-newSize = [100,50];
+newSize = [129,65];
 offset  = ceil(Int64,(newSize[1]*(13.5/13.5)));
 println("Offset is: ",offset)
 (m,Minv,mref,boundsHigh,boundsLow) = readModelAndGenerateMeshMref(modelDir,"SEGmodel2Dsalt.dat",dim,pad,[0.0,13.5,0.0,4.2],newSize,1.752,2.7);
@@ -167,15 +167,15 @@ mc,Dc = freqCont(mc, pInv, pMis,contDiv, 3, resultsFilename,dump,"Joint",1,0,"pr
 
 clear!(pMis);
 ##############################################################################################
-rm("DATA_SEG(120,60)_freq0.5.dat");
-rm("DATA_SEG(120,60)_freq1.0.dat");
-rm("DATA_SEG(120,60)_rcvMap.dat");
-rm("DATA_SEG(120,60)_srcMap.dat");
-rm("DATA_SEG(120,60)_PARAM.mat");
-rm("SEG(120,60)_FC2_HisGN.mat");
-rm("SEG(120,60)_FC1_HisGN.mat");
-rm("SEG(120,60)_Cyc1_FC2_HisGN.mat");
-rm("SEG(120,60)_Cyc1_FC1_HisGN.mat");
+rm("DATA_SEG(149,75)_freq0.5.dat");
+rm("DATA_SEG(149,75)_freq1.0.dat");
+rm("DATA_SEG(149,75)_rcvMap.dat");
+rm("DATA_SEG(149,75)_srcMap.dat");
+rm("DATA_SEG(149,75)_PARAM.mat");
+rm("SEG(149,75)_FC2_HisGN.mat");
+rm("SEG(149,75)_FC1_HisGN.mat");
+rm("SEG(149,75)_Cyc1_FC2_HisGN.mat");
+rm("SEG(149,75)_Cyc1_FC1_HisGN.mat");
 rm("jInv.out");
 
 

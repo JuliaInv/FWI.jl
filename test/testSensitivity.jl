@@ -44,12 +44,12 @@ end
 
 
 println("########### 2D TEST SETTING ##############################");
-n = [50,100]
+n = [65,129]
 Omega = [0.0,4.0,0.0,8.0];
 Minv = getRegularMesh(Omega,n-1);
 println(Minv.n)
 m = getAnalyticalConstGradInv2D(Minv.n+1,Minv.h)[1];
-n = [100,50]
+n = [65,129]
 Omega = [0.0,8.0,0.0,4.0];
 Minv = getRegularMesh(Omega,n-1);
 m = m';
