@@ -47,16 +47,16 @@ resultsDir = pwd();
 ########################################################################################################
 dim     = 2;
 pad     = 30;
-jumpSrc = 50;
+jumpSrc = 5;
 newSize = [600,300];
 
 offset  = ceil(Int64,(newSize[1]*(8.0/13.5)));
 println("Offset is: ",offset," cells.")
 (m,Minv,mref,boundsHigh,boundsLow) = readModelAndGenerateMeshMref(modelDir,"SEGmodel2Dsalt.dat",dim,pad,[0.0,13.5,0.0,4.2],newSize,1.752,2.9);
 
+omega = [2.0,2.5,3.5,4.5,6.0]*2*pi;
 
-# omega = [2.0,2.5,3.5,4.5,6.0]*2*pi;
-omega = [2.0,2.5]*2*pi;
+# omega = [2.0,2.5]*2*pi;
 maxBatchSize = 128;
 useFilesForFields = false;
 
