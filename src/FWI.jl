@@ -71,8 +71,8 @@ function getFWIparam(omega::Array{Float64}, WaveletCoef::Array{Complex128},gamma
 		end
 	end
 	numWorkers = length(ActualWorkers);
-	pFor   = Array(RemoteChannel,numWorkers*length(omega));
-	SourcesSubInd = Array(Array{Int64,1},numWorkers*length(omega));
+	pFor   = Array{RemoteChannel}(numWorkers*length(omega));
+	SourcesSubInd = Array{Array{Int64,1}}(numWorkers*length(omega));
 	for k=1:length(omega)
 		getFWIparamInternal(omega[k],WaveletCoef[k], gamma,Sources,Receivers,zeros(FieldsType,0), Mesh, 
 									ForwardSolver, forwardSolveBatchSize ,ActualWorkers,pFor,(k-1)*numWorkers+1,SourcesSubInd,useFilesForFields);
@@ -120,7 +120,7 @@ function getFWIparamInternal(omega::Float64,WaveletCoef::Complex128,
 							Receivers::Union{Vector{Float64},SparseMatrixCSC,Array{Float64,2}},
 							Fields::Array{FieldsType},
 							Mesh::RegularMesh, ForwardSolver:: AbstractSolver, forwardSolveBatchSize::Int64,useFilesForFields::Bool = false)
-	return FWIparam(omega,WaveletCoef,gamma,Sources,Receivers,Fields,Mesh,ForwardSolver,forwardSolveBatchSize,Array(Int64,0),useFilesForFields)
+	return FWIparam(omega,WaveletCoef,gamma,Sources,Receivers,Fields,Mesh,ForwardSolver,forwardSolveBatchSize,Array{Int64}(0),useFilesForFields)
 end
 
 # function setSourceSelection(pForRF::RemoteRef{Channel{Any}}, selection::Array{Int64,1})

@@ -2,7 +2,6 @@ using  jInv.Mesh
 using  jInv.Utils
 using  jInv.LinearSolvers
 using  jInv.InverseSolve
-using  jInv.Vis
 using  EikonalInv
 using  MAT
 using  FWI
@@ -23,6 +22,7 @@ plotting = false;
 realTesting = false;
 
 if plotting
+	using jInvVis
 	using  PyPlot
 	close("all");
 end
@@ -92,8 +92,8 @@ SRCfile = string(timeDataFilenamePrefix,"_srcMap.dat");
 srcNodeMap = readSrcRcvLocationFile(SRCfile,Minv);
 rcvNodeMap = readSrcRcvLocationFile(RCVfile,Minv);
 							
-DobsTD = Array(Array{Complex128,2},length(omega));
-WdTD = Array(Array{Complex128,2},length(omega));
+DobsTD = Array{Array{Complex128,2}}(length(omega));
+WdTD = Array{Array{Complex128,2}}(length(omega));
 
 for k = 1:length(omega)
 	omRound = string(round((omega[k]/(2*pi))*100.0)/100.0);
@@ -141,8 +141,8 @@ SRCfile = string(dataFilenamePrefix,"_srcMap.dat");
 srcNodeMap = readSrcRcvLocationFile(SRCfile,Minv);
 rcvNodeMap = readSrcRcvLocationFile(RCVfile,Minv);
 
-DobsFD = Array(Array{Complex128,2},length(omega));
-WdFD = Array(Array{Complex128,2},length(omega));
+DobsFD = Array{Array{Complex128,2}}(length(omega));
+WdFD = Array{Array{Complex128,2}}(length(omega));
 
 for k = 1:length(omega)
 	omRound = string(round((omega[k]/(2*pi))*100.0)/100.0);

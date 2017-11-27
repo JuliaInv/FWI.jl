@@ -100,6 +100,20 @@ dobs = Array(Array{Complex128,2},length(pForFWI))
 for k = 1:length(omega)
 	omRound = string(round((omega[k]/(2*pi))*100.0)/100.0);
 	(DobsFWIwk,WdFWIwk) =  readDataFileToDataMat(string(filenamePrefix,"_freq",omRound,".dat"),srcNodeMap,rcvNodeMap);
+	# figure()
+	# imshow(real(DobsFWIwk)'); colorbar();title("Real")
+	# figure()
+	# imshow(imag(DobsFWIwk)'); colorbar();title("Imag")
+	
+	# figure()
+	# imshow(real(exp(-1im*omega[k]*DobsEik).*DobsFWIwk)'); colorbar();
+	# figure()
+	# imshow(imag(exp(-1im*omega[k]*DobsEik).*DobsFWIwk)'); colorbar();
+	
+	# figure()
+	# imshow(real(log(DobsFWIwk))'); colorbar(); title("Real log");
+	# figure()
+	# imshow(imag(log(DobsFWIwk))'); colorbar(); title("image log");
 	
 	for i = contDivFWI[k]:contDivFWI[k+1]-1
 		I_i = SourcesSubIndFWI[i]; # subset of sources for ith worker.

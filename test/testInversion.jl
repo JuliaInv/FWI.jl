@@ -6,7 +6,7 @@ using  jInv.Mesh
 using  jInv.Utils
 using  jInv.LinearSolvers
 using  jInv.InverseSolve
-using  jInv.Vis
+using  jInvVis
 using  EikonalInv
 using  MAT
 using  FWI
@@ -167,15 +167,15 @@ mc,Dc = freqCont(mc, pInv, pMis,contDiv, 3, resultsFilename,dump,"Joint",1,0,"pr
 
 clear!(pMis);
 ##############################################################################################
-rm("DATA_SEG(149,75)_freq0.5.dat");
-rm("DATA_SEG(149,75)_freq1.0.dat");
-rm("DATA_SEG(149,75)_rcvMap.dat");
-rm("DATA_SEG(149,75)_srcMap.dat");
-rm("DATA_SEG(149,75)_PARAM.mat");
-rm("SEG(149,75)_FC2_HisGN.mat");
-rm("SEG(149,75)_FC1_HisGN.mat");
-rm("SEG(149,75)_Cyc1_FC2_HisGN.mat");
-rm("SEG(149,75)_Cyc1_FC1_HisGN.mat");
+rm("DATA_SEG(149, 75)_freq0.5.dat");
+rm("DATA_SEG(149, 75)_freq1.0.dat");
+rm("DATA_SEG(149, 75)_rcvMap.dat");
+rm("DATA_SEG(149, 75)_srcMap.dat");
+rm("DATA_SEG(149, 75)_PARAM.mat");
+rm("SEG(149, 75)_FC2_HisGN.mat");
+rm("SEG(149, 75)_FC1_HisGN.mat");
+rm("SEG(149, 75)_Cyc1_FC2_HisGN.mat");
+rm("SEG(149, 75)_Cyc1_FC1_HisGN.mat");
 rm("jInv.out");
 
 

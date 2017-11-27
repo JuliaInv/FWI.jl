@@ -30,7 +30,7 @@ function checkDerivativeFWI(f::Function,x0,param,Iact;out::Bool=true,tol::Number
 		Error[j,1] = norm(f0-ft)/norm(f0)           # Error TaylorPoly 0
 		Error[j,2] = norm(f0 .+10.0^(-j)*dvf .- ft)/norm(f0) # Error TaylorPoly 1
 		if j>1
-			Order[j,:] = log10(Error[j-1,:]./Error[j,:]);
+			Order[j,:] = log10.(Error[j-1,:]./Error[j,:]);
 		end
 		if (Order[j,2]>tol) || (Error[j,1]/Error[j,2] > 100); Success[j]=1; end
 		if out 
@@ -54,8 +54,7 @@ Omega = [0.0,8.0,0.0,4.0];
 Minv = getRegularMesh(Omega,n-1);
 m = m';
 
-# using PyPlot
-# imshow(m')
+
 pad = 16;
 jump = 15;
 offset = 100;

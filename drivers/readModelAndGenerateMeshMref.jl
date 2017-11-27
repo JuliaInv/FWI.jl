@@ -16,7 +16,7 @@ else
 	mref = getSimilarLinearModel(m,velBottom,velHigh);
 end
 
-sea = abs(m[:] .- minimum(m)) .< 7e-2;
+sea = abs.(m[:] .- minimum(m)) .< 7e-2;
 mref[sea] = m[sea];
 if newSize!=[]
 	m    = expandModelNearest(m,   collect(size(m)),newSize);

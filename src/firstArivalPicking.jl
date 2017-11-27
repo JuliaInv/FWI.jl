@@ -5,7 +5,7 @@ dobsEikPicked = zeros(Float64,size(mask));
 
 for k = 1:length(dataTraces)
 	Dk = dataTraces[k];
-	sigma = maximum(abs(Dk[:]));
+	sigma = maximum(abs.(Dk[:]));
 	# print("Mean Signal: ")
 	# println(sigma)
 	

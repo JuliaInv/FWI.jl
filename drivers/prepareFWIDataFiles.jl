@@ -54,7 +54,7 @@ if pickFirstArival
 	srcInfo = readdlm(SRCfile); x_src_loc = vec(srcInfo[:,2])
 	# getFirstArival(dataTraces::Array{Array{Float64}},mask::Array,x_rcv_loc::Array{Float64},x_src_loc::Float64,vmax::Float64,vmin::Float64,window::Int64,dt::Float64,offset)
 	DobsPicked = getFirstArival(DobsTimeNoisy,Mask,x_rcv_loc,x_src_loc,maximum(boundsHigh),minimum(boundsLow),rickerWidth,dt,zeroTimeOffset);
-	Wd = (1.0./(abs(DobsPicked)+ 0.1*mean(abs(DobsPicked))));
+	Wd = (1.0./(abs.(DobsPicked)+ 0.1*mean(abs.(DobsPicked))));
 	Wd = Wd.*Mask;
 	srcNodeMap = readSrcRcvLocationFile(SRCfile,Minv);
 	rcvNodeMap = readSrcRcvLocationFile(RCVfile,Minv);
@@ -121,14 +121,14 @@ nrcv = size(P,2);
 
 for k = 1:length(omega)
 	I = contDiv[k] : contDiv[k+1] - 1 
-	Dobsk = Array(Array{Complex128,2},length(I));
+	Dobsk = Array{Array{Complex128,2}}(length(I));
 	for i = 1:length(I)
 		Dobsk[i] = fetch(D[I[i]]);
 	end
 	Dobsk = arrangeRemoteCallDataIntoLocalData(Dobsk);
 	# Dobsk += 0.005*mean(abs(Dobsk))*(randn(size(Dobsk,1),size(Dobsk,2)) + 1im*randn(size(Dobsk,1),size(Dobsk,2)));
 	omRound = string(round((omega[k]/(2*pi))*100.0)/100.0);
-	Wd_k = (1./(abs(real(Dobsk))+0.1*mean(abs(Dobsk)))) + 1im*(1./(abs(imag(Dobsk))+0.1*mean(abs(Dobsk))));
+	Wd_k = (1./(abs.(real.(Dobsk))+0.1*mean(abs.(Dobsk)))) + 1im*(1./(abs.(imag.(Dobsk))+0.1*mean(abs.(Dobsk))));
 	# Wd_k = (1./(0.0*abs(real(Dobsk))+1.0*mean(abs(Dobsk)))) + 1im*(1./(0.0*abs(imag(Dobsk))+1.0*mean(abs(Dobsk))));
 	Wd_k = limitDataToOffset(Wd_k,srcNodeMap,rcvNodeMap,offset);
 	filename = string(dataFullFilenamePrefix,omRound,".dat");
@@ -179,7 +179,7 @@ computeTimeDomain = true;
 if computeTimeDomain
 	pFor,SourcesSubInd = getTimeDomainFWIParam(gamma[:],Q,P,Mask,Minv,rickt,dt,T,workerList);
 	(DRF,pFor) = getData(velocityToSlowSquared(m[:])[1],pFor,ones(length(pFor)),true);
-	DobsTime = Array(Array{Float32,2},size(Q,2));
+	DobsTime = Array{Array{Float32,2}}(size(Q,2));
 	for k=1:length(pFor)
 		Dt = fetch(DRF[k]);
 		for i = 1:length(SourcesSubInd[k])
@@ -198,7 +198,7 @@ else
 end
 
 
-DobsOmHat = Array(Array{Complex128,2},length(omega));
+DobsOmHat = Array{Array{Complex128,2}}(length(omega));
 for k=1:length(omega)
 	DobsOmHat[k] = zeros(Complex128,nrcv,nsrc);
 end
@@ -209,7 +209,7 @@ rickhsub = zeros(Complex128,length(omega));
 
 for k = 1:length(DobsTime)
 	Dk = DobsTime[k];
-	Dk = Dk + sigmaNoise*mean(abs(Dk))*randn(size(Dk));
+	Dk = Dk + sigmaNoise*mean(abs.(Dk))*randn(size(Dk));
 	DobsTime[k] = Dk;
 	Dhat = fft(Dk,2);
 	for jj = 1:length(omega)
@@ -222,7 +222,7 @@ end
 for k = 1:length(omega)
 	omRound = string(round((omega[k]/(2*pi))*100.0)/100.0);
 	Dobsk = DobsOmHat[k];
-	Wd_k = (1./(abs(real(Dobsk))+0.1*mean(abs(Dobsk)))) + 1im*(1./(abs(imag(Dobsk))+0.1*mean(abs(Dobsk))));
+	Wd_k = (1./(abs.(real(Dobsk))+0.1*mean(abs.(Dobsk)))) + 1im*(1./(abs.(imag(Dobsk))+0.1*mean(abs.(Dobsk))));
 	# Wd_k = (1./(0.0*abs(real(Dobsk))+1.0*mean(abs(Dobsk)))) + 1im*(1./(0.0*abs(imag(Dobsk))+1.0*mean(abs(Dobsk))));
 	Wd_k .*= Mask;
 	filename = string(dataFullFilenamePrefix,omRound,".dat");
@@ -253,7 +253,7 @@ println("~~~~~~~ Getting data Eikonal: ~~~~~~~");
 (D,pForEIK) = getData(velocityToSlowSquared(m[:])[1],pForEIK,ones(length(pForEIK)),true);
 
 
-Dobs = Array(Array{Float64,2},length(pForEIK))
+Dobs = Array{Array{Float64,2}}(length(pForEIK))
 for k = 1:length(pForEIK)
 	Dobs[k] = fetch(D[k]);
 end
@@ -261,7 +261,7 @@ Dobs = arrangeRemoteCallDataIntoLocalData(Dobs);
 
 # D should be of length 1 becasue constMUSTBeOne = 1;
 # Dobs += 0.01*mean(abs(Dobs))*randn(size(Dobs,1),size(Dobs,2));
-Wd = (1.0./(abs(Dobs)+ 0.1*mean(abs(Dobs))));
+Wd = (1.0./(abs.(Dobs)+ 0.1*mean(abs.(Dobs))));
 Wd = limitDataToOffset(Wd,srcNodeMap,rcvNodeMap,offset);
 writeDataFile(string(dataFullFilename,".dat"),Dobs,Wd,srcNodeMap,rcvNodeMap);
 

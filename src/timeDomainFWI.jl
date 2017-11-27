@@ -1,6 +1,6 @@
 export timeDomainFWIparam, simulateTimeDomainFWI,getTimeDomainFWIParam,getData,getRickerFunction
 
-type timeDomainFWIparam 
+type timeDomainFWIparam <: ForwardProbType
     gamma					:: Vector{Float64}     # attenuation
     Sources					:: Union{Vector{Float64},SparseMatrixCSC,Array{Float64,2}}   # Sources
     Receivers				:: Union{Vector{Float64},SparseMatrixCSC,Array{Float64,2}}
@@ -22,8 +22,8 @@ else
 end
 numWorkers = length(ActualWorkers);
 println("We have ",numWorkers," workers for time FWI");
-pFor   = Array(RemoteChannel,numWorkers);
-SourcesSubInd = Array(Array{Int64,1},numWorkers);
+pFor   = Array{RemoteChannel}(numWorkers);
+SourcesSubInd = Array{Array{Int64,1}}(numWorkers);
 i = 1; nextidx() = (idx=i; i+=1; idx)
 nsrc  = size(Sources,2);
 
@@ -51,7 +51,7 @@ function getRickerFunction(T,dt,fm)
 	Td = 2*sqrt(6)/(pi*fm);
 	nt = convert(Int64,round(T/dt));
 	t  = dt:dt:nt*dt;
-	ricker = (1-(2*pi^2*fm^2).*((t-3*Td).^2)).*exp(-((t-3*Td).^2*(pi*fm).^2));
+	ricker = (1-(2*pi^2*fm^2).*((t-3*Td).^2)).*exp.(-((t-3*Td).^2*(pi*fm).^2));
 	zeroOffset = convert(Int64,round(((3*Td)./dt) + 1));
 	widthOfHalfRicker = round(Int64,(sqrt(8)/(pi*fm))/dt);
 	return ricker,zeroOffset,widthOfHalfRicker;
@@ -71,7 +71,7 @@ RecMask     = pFor.ReceiverMask
 nrec  		= size(P,2) 
 nsrc  		= size(Q,2)
 	
-D = Array(Array{Float32,2},nsrc);
+D = Array{Array{Float32,2}}(nsrc);
 	
 nt = convert(Int64,round(T/dt));
 
