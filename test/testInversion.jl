@@ -6,7 +6,7 @@ using  jInv.Mesh
 using  jInv.Utils
 using  jInv.LinearSolvers
 using  jInv.InverseSolve
-using  jInvVis
+
 using  EikonalInv
 using  MAT
 using  FWI
@@ -17,7 +17,7 @@ println("===============  TestInversion using Julia solver   ===================
 println("=======================================================================\n")
 
 #############################################################################################################
-modelDir = pwd();
+modelDir ="../examples/";
 
 
 dataDir = pwd();
@@ -28,6 +28,7 @@ include("../drivers/setupFWI.jl");
 plotting = false;
 
 if plotting
+	using  jInvVis
 	using  PyPlot
 	close("all");
 end

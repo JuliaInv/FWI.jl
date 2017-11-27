@@ -12,7 +12,7 @@ println("===============  TestTimeDomain   =====================================
 println("=======================================================================")
 
 #############################################################################################################
-modelDir = pwd();
+modelDir = "../examples/";
 dataDir = pwd();
 include("../drivers/prepareFWIDataFiles.jl");
 include("../drivers/readModelAndGenerateMeshMref.jl");
